@@ -8,15 +8,16 @@ The user wants to create a practical Chinese tutorial series that helps develope
 
 The target reader may not understand Codex Skills yet. They need a tutorial that starts from a simple, familiar example and gradually shows how Skills change the way an agent works: clarifying ideas, preserving context, creating specs, splitting tickets, implementing with tests, and reviewing against both repository standards and the original spec.
 
-The tutorial should also serve the user personally as reusable learning notes while being clear enough to share with others.
+The tutorial should also serve the user personally as reusable learning notes while being clear enough to share with others. The tutorial now needs a clearer release strategy: Markdown remains the single source of truth, while generated HTML is a shareable offline release artifact.
 
 ## Solution
 
-Create a three-file Markdown tutorial series under `docs/tutorials/matt-pocock-skills/`:
+Create and maintain a Markdown tutorial series under `docs/tutorials/matt-pocock-skills/`:
 
-1. A README navigation page.
+1. A README navigation and lookup page.
 2. An introductory tutorial for readers new to Codex Skills.
 3. An engineering workflow tutorial for readers ready to use Matt Pocock Skills as a structured development process.
+4. Additional tutorial pages when a Skill does not fit naturally into the README, the beginner article, or the engineering mainline.
 
 The tutorial will use a Todo application as the running example because it is simple, familiar, and lets readers focus on the workflow rather than the business domain. The first article will use a personal Todo MVP. The second article will continue from an existing Todo app and add tags, filtering, and archiving.
 
@@ -29,7 +30,7 @@ The writing should be scenario-driven. Each Skill should be introduced through a
 - What artifact or decision the Skill produces.
 - Which step comes next.
 
-The series should cover the main Matt Pocock workflow in depth while using short supporting scenarios for the other installed Skills.
+The series should cover every locally installed, currently effective Matt Pocock Skill with at least one accurate scenario. Main workflow Skills should receive deeper treatment; supporting Skills may receive shorter but still concrete scenarios.
 
 ## User Stories
 
@@ -70,27 +71,83 @@ The series should cover the main Matt Pocock workflow in depth while using short
 35. As a reader, I want the lookup table to link to exact sections, so that I do not need to scan the whole tutorial.
 36. As a reader, I want the tutorial to avoid a standalone "common mistakes" lecture, so that corrections appear naturally inside usage scenes.
 37. As a reader, I want the writing to reference AI Hero and `mattpocock/skills` as source baselines, so that the workflow explanation stays aligned with Matt Pocock's actual framing.
+38. As a reader, I want to know that this is not official Matt Pocock documentation or an official translation, so that I understand its authority and intended use.
+39. As a reader, I want a complete quick index of the locally effective Matt Pocock Skills, so that I can quickly find the Skill I am thinking about.
+40. As a reader, I want every indexed Skill to point to a concrete scenario, so that the index is useful for choosing behavior rather than merely memorizing names.
+41. As a reader, I want scenario routing grouped by situation, so that I can scan the README without reading one long table.
+42. As a reader, I want `/research`, `/prototype`, and `/wayfinder` return paths distinguished clearly, so that I do not send their outputs to the wrong next step.
+43. As a reader, I want README links to name both the article and the target section, so that local preview limitations do not make navigation confusing.
+44. As a maintainer, I want Markdown to remain the single source of truth, so that generated HTML releases cannot drift from editable source documents.
+45. As a maintainer, I want an offline HTML release option, so that the tutorial can be shared even when GitHub access is unreliable.
+46. As a maintainer, I want GitHub or Gitee to be treated as distribution channels rather than build prerequisites, so that local releases remain possible without network access.
 
 ## Implementation Decisions
 
 - The tutorial series will be written as Markdown files in `docs/tutorials/matt-pocock-skills/`.
-- The series will contain exactly three top-level tutorial files for this spec:
+- Markdown files are the only editable source of truth.
+- Generated HTML is a release artifact and must not be hand-edited.
+- Git commits or tags should be usable as release source points for generated HTML packages.
+- GitHub and Gitee may be used for public reading, feedback, and distribution, but local Markdown plus git history remains the build source.
+- The core tutorial files remain:
   - `README.md`
   - `01-codex-skills-basics.md`
   - `02-engineering-workflow.md`
-- `README.md` will act as the navigation page and contain a "I am facing X; which Skill should I use?" table with links to the corresponding sections in the two articles.
+- Additional article files may be added when needed to cover local effective Skills without bloating README or distorting the Todo mainline.
+- `README.md` will act as the navigation and lookup page. It should not become a long conceptual article or a prompt-template collection.
+- `README.md` should explicitly state that the tutorial is not Matt Pocock official documentation or an official translation.
+- `README.md` should contain grouped scenario routing with links to corresponding tutorial sections.
+- The scenario routing table's action column should use wording like "建议下一步", not "优先使用的 Skill", because some entries are process actions rather than direct Skill calls.
+- The scenario routing should be split into four groups:
+  - 新手入门
+  - 主链路
+  - Shaping 与回流
+  - 维护与异常
+- `README.md` should contain a full quick index of the locally installed effective Matt Pocock Skills.
+- `README.md` should not contain a standalone "可复制调用模板" section. Example invocation text should live inside contextual tutorial sections.
 - The first article will focus on entry-level understanding and use a personal Todo MVP as the example.
 - The second article will focus on engineering workflow and use an existing Todo app gaining tags, filtering, and archiving as the example.
 - The tutorial will use short dialogue snippets rather than long transcripts.
 - Dialogue snippets will be realistic enough to imitate, but concise enough to keep the article readable.
 - The tutorial will distinguish user-invoked Skills from lower-level supporting disciplines.
 - The tutorial will explain that `/implement` is the outer execution Skill and `/tdd` is normally used inside implementation where possible.
-- The tutorial will cover all installed Matt Pocock Skills either in the main Todo workflow or in short supplemental scenarios.
+- The tutorial will cover all locally installed effective Matt Pocock Skills either in the main Todo workflow or in short supplemental scenarios.
+- The local effective Skill baseline for this spec is:
+  - `/ask-matt`
+  - `/code-review`
+  - `/codebase-design`
+  - `/diagnosing-bugs`
+  - `/domain-modeling`
+  - `/grill-me`
+  - `/grill-with-docs`
+  - `/grilling`
+  - `/handoff`
+  - `/implement`
+  - `/improve-codebase-architecture`
+  - `/prototype`
+  - `/research`
+  - `/resolving-merge-conflicts`
+  - `/setup-matt-pocock-skills`
+  - `/tdd`
+  - `/teach`
+  - `/to-spec`
+  - `/to-tickets`
+  - `/triage`
+  - `/wayfinder`
+  - `/writing-great-skills`
+- This spec should not use stale, obsolete, or historical skills.sh entries as the effective Skill list.
 - Main workflow Skills will receive deeper treatment: `/setup-matt-pocock-skills`, `/grill-me`, `/grill-with-docs`, `/wayfinder`, `/to-spec`, `/to-tickets`, `/implement`, `/tdd`, `/code-review`, and `/handoff`.
 - Supporting Skills will receive shorter scene-based explanations: `/ask-matt`, `/triage`, `/diagnosing-bugs`, `/prototype`, `/research`, `/teach`, `/improve-codebase-architecture`, `/codebase-design`, `/resolving-merge-conflicts`, `/writing-great-skills`, `/grilling`, and `/domain-modeling`.
 - The tutorial will not create a standalone "common mistakes" section. Misunderstandings will be corrected inside the relevant usage scenes.
 - The tutorial should mention `AGENTS.md`, `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, and `docs/agents/triage-labels.md` when explaining setup.
 - The tutorial should frame `CONTEXT.md` as shared domain vocabulary and ADRs as records for hard-to-reverse, surprising, trade-off decisions.
+- The tutorial should distinguish the回流 paths from shaping Skills:
+  - `/research` findings may return to `/grill-with-docs`, `/to-spec`, or `/to-tickets`, depending on whether they change understanding, requirements, or ticket decomposition.
+  - `/prototype` conclusions usually return to `/to-spec` or ticket acceptance criteria; if they expose a new decision, they may return to `/grill-with-docs`.
+  - `/wayfinder` conclusions normally return to `/to-spec` or `/to-tickets`; they should not be described as normally returning to `/grill-with-docs`.
+- The tutorial should include recommended reading and distribution guidance:
+  - GitHub or repository web UI when online access is available.
+  - Offline static HTML package for release distribution.
+  - VS Code or Cursor for local Markdown authoring, with a note that local preview may not always scroll to cross-file anchors.
 - The tutorial should treat issue tracker concepts consistently:
   - Issue means a tracked work item, not only a bug.
   - Spec describes what to build, why, and how to accept it.
@@ -108,6 +165,14 @@ The series should cover the main Matt Pocock workflow in depth while using short
 - Verify that `README.md` links to the corresponding sections in both article files.
 - Verify that the two article files contain stable section headings for every linked scene.
 - Verify that every installed Matt Pocock Skill is covered at least once either in a main workflow scene or a supplemental scenario.
+- Verify that the README quick index includes all 22 local effective Skills listed in this spec.
+- Verify that every indexed Skill links to a tutorial scenario or section.
+- Verify that README does not contain a standalone copyable invocation template section.
+- Verify that README scenario routing is grouped and uses "建议下一步" or equivalent wording.
+- Verify that `/research`, `/prototype`, and `/wayfinder`回流 guidance is not collapsed into one ambiguous row.
+- Verify that `/wayfinder` is not described as normally returning to `/grill-with-docs`.
+- Verify that README states the tutorial is not official Matt Pocock documentation or an official translation.
+- Verify that Markdown is identified as source of truth and generated HTML as release artifact.
 - Verify that the main Todo workflow appears consistently across the README and both articles.
 - Verify that the tutorial distinguishes user-invoked Skills from supporting disciplines.
 - Verify that setup is explained as repository convention configuration, not Skill installation.
@@ -126,9 +191,11 @@ The series should cover the main Matt Pocock workflow in depth while using short
 - Installing or modifying Matt Pocock Skills.
 - Changing the local issue tracker configuration.
 - Writing a new custom Skill.
-- Creating a website or rendered documentation site.
+- Building the rendered HTML release package in this spec pass. This spec may describe the release approach, but implementation can be split into later tickets.
 - Exhaustively reproducing Matt Pocock's videos.
 - Providing a complete reference manual for every line of every `SKILL.md`.
+- Maintaining a second editable truth in generated HTML.
+- Adding obsolete or historical Skill names as primary tutorial entries.
 
 ## Further Notes
 
@@ -137,3 +204,5 @@ The tutorial should be useful both as the user's personal learning material and 
 The writing should prioritize imitation and practice. Each Skill should be explained through "when you are in this situation, say this, expect this output, then go here next."
 
 The tutorial should remain faithful to the installed local Skills and to the public framing from AI Hero and `mattpocock/skills`.
+
+This spec supersedes earlier tutorial decisions that required README to keep many direct copyable usage templates or limited the series to exactly three top-level tutorial files.
