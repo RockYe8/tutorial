@@ -16,6 +16,8 @@
 
 本 README 可以作为路线图使用：表格里的链接指向稳定章节锚点，方便读者从自己的处境直接跳到对应场景。
 
+阅读时可以先把 Skills 看成两类。第一类是主链路上通常由用户主动调用的外层流程，比如 `/setup-matt-pocock-skills`、`/grill-me`、`/grill-with-docs`、`/handoff`、`/wayfinder`、`/to-spec`、`/to-tickets`、`/implement` 和 `/code-review`。第二类是更常嵌入外层流程的支撑纪律，比如 `/grilling`、`/domain-modeling`、`/tdd` 和 `/codebase-design`，它们帮助外层流程追问、建模、测试和设计。支撑纪律也可以单独调用，但教程会优先说明它们在完整 workflow 里的位置。
+
 ## 我遇到 X，该用哪个 Skill？
 
 | 我现在的处境 | 优先使用的 Skill | 跳转到教程场景 |

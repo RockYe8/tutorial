@@ -6,15 +6,27 @@
 
 **Status:** ready-for-agent
 
-- [ ] Verify `docs/tutorials/matt-pocock-skills/README.md` exists.
-- [ ] Verify `docs/tutorials/matt-pocock-skills/01-codex-skills-basics.md` exists.
-- [ ] Verify `docs/tutorials/matt-pocock-skills/02-engineering-workflow.md` exists.
-- [ ] Verify README links point to real headings in the article files.
-- [ ] Verify every installed Matt Pocock Skill is covered at least once either in the main workflow or a supplemental scenario.
-- [ ] Verify Todo terminology and example progression are consistent across all three files.
-- [ ] Verify the tutorial distinguishes user-invoked Skills from lower-level supporting disciplines.
-- [ ] Verify `/setup-matt-pocock-skills` is described as repository convention setup, not Skill installation.
-- [ ] Verify `/grill-with-docs` is described as clarification plus domain documentation, not automatic full spec generation.
-- [ ] Verify `/implement` and `/tdd` are described with the correct outer/inner relationship.
-- [ ] Verify `/triage` is described as processing raw incoming issues, not tickets already produced by `/to-tickets`.
-- [ ] Polish the prose so the tutorial reads as practical Chinese learning material rather than an outline.
+- [x] Verify `docs/tutorials/matt-pocock-skills/README.md` exists.
+- [x] Verify `docs/tutorials/matt-pocock-skills/01-codex-skills-basics.md` exists.
+- [x] Verify `docs/tutorials/matt-pocock-skills/02-engineering-workflow.md` exists.
+- [x] Verify README links point to real headings in the article files.
+- [x] Verify every installed Matt Pocock Skill is covered at least once either in the main workflow or a supplemental scenario.
+- [x] Verify Todo terminology and example progression are consistent across all three files.
+- [x] Verify the tutorial distinguishes user-invoked Skills from lower-level supporting disciplines.
+- [x] Verify `/setup-matt-pocock-skills` is described as repository convention setup, not Skill installation.
+- [x] Verify `/grill-with-docs` is described as clarification plus domain documentation, not automatic full spec generation.
+- [x] Verify `/implement` and `/tdd` are described with the correct outer/inner relationship.
+- [x] Verify `/triage` is described as processing raw incoming issues, not tickets already produced by `/to-tickets`.
+- [x] Polish the prose so the tutorial reads as practical Chinese learning material rather than an outline.
+
+## Comments
+
+### 2026-07-22 - Agent verification
+
+- Completed this verification ticket while preserving the repo's implementation-issue triage label vocabulary in the `Status:` field.
+- Verified all three tutorial Markdown files exist.
+- Verified README tutorial links point to existing Markdown files and real explicit heading anchors.
+- Verified all 22 installed local Matt Pocock Skills under `C:\Users\YHong\.codex\skills` are covered at least once, excluding `.system`.
+- Verified the Todo examples progress consistently from a personal Todo MVP to an existing Todo app adding tags, filtering, and archiving.
+- Verified `/setup-matt-pocock-skills`, `/grill-with-docs`, `/implement` plus `/tdd`, and `/triage` are described with the intended boundaries.
+- Added a short README clarification distinguishing user-invoked outer workflows from lower-level supporting disciplines.
