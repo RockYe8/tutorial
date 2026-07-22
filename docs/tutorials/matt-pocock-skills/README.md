@@ -89,6 +89,35 @@ README 只负责帮你找路。可模仿的调用文本放在对应教程场景�
 | 合并或 rebase 时出现冲突，需要保留双方意图 | 用 `/resolving-merge-conflicts` 解决冲突 | [02 - 从 Setup 到 Code Review 的工程主链路：用 `/resolving-merge-conflicts` 解决冲突](02-engineering-workflow.md#resolving-merge-conflicts) |
 | 我以后想写自己的 Skill | 用 `/writing-great-skills` 学写可重复 workflow | [02 - 从 Setup 到 Code Review 的工程主链路：用 `/writing-great-skills` 学写 Skill](02-engineering-workflow.md#writing-great-skills) |
 
+## 22 个本地有效 Skills 速查索引
+
+这个索引只覆盖当前本地有效的 22 个 Matt Pocock Skills，不使用 skills.sh 旧清单里的历史名称。每一项都指向一个带上下文的教程场景；需要可模仿的调用文本时，点进场景看，不要把 README 当成孤立模板库。
+
+| Skill | 一句话用途 | 教程场景 |
+| --- | --- | --- |
+| `/ask-matt` | 当你知道自己卡住了、但不知道该进入哪个 Skill 或流程时，用它选择下一步。 | [03 - 22 个本地 Skill 的场景速写：`/ask-matt` 不知道下一步该用哪个 Skill](03-local-skill-scenarios.md#ask-matt) |
+| `/code-review` | 当一个实现切片完成后，用它同时按仓库 Standards 和原始 Spec 两条轴检查偏差。 | [03 - 22 个本地 Skill 的场景速写：`/code-review` 同时检查 Standards 与 Spec](03-local-skill-scenarios.md#code-review) |
+| `/codebase-design` | 当模块边界、接口深浅或测试接缝还不清楚时，用它把设计讨论收窄成可执行判断。 | [03 - 22 个本地 Skill 的场景速写：`/codebase-design` 讨论模块边界和深模块](03-local-skill-scenarios.md#codebase-design) |
+| `/diagnosing-bugs` | 当程序坏了或测试失败时，用它先建立可复现的红色反馈，再定位和修复。 | [03 - 22 个本地 Skill 的场景速写：`/diagnosing-bugs` 先复现，再修 bug](03-local-skill-scenarios.md#diagnosing-bugs) |
+| `/domain-modeling` | 当术语、实体关系或关键决策需要长期复用时，用它沉淀到领域文档和 ADR。 | [03 - 22 个本地 Skill 的场景速写：`/domain-modeling` 把稳定术语和关键决定写下来](03-local-skill-scenarios.md#domain-modeling) |
+| `/grill-me` | 当你只有一个没有仓库上下文的模糊想法时，用它先追问范围、非目标和验收边界。 | [03 - 22 个本地 Skill 的场景速写：`/grill-me` 没有仓库上下文时先追问](03-local-skill-scenarios.md#grill-me) |
+| `/grill-with-docs` | 当真实仓库里的需求还不稳定时，用它带着项目约定和领域文档澄清问题。 | [03 - 22 个本地 Skill 的场景速写：`/grill-with-docs` 带着仓库文档追问](03-local-skill-scenarios.md#grill-with-docs) |
+| `/grilling` | 当你想强化追问纪律本身时，用它检查范围、风险、验收和最容易返工的决定。 | [03 - 22 个本地 Skill 的场景速写：`/grilling` 追问背后的纪律](03-local-skill-scenarios.md#grilling) |
+| `/handoff` | 当会话变长或需要换任务继续时，用它把当前 artifacts、状态、问题和下一步整理成交接上下文。 | [03 - 22 个本地 Skill 的场景速写：`/handoff` 跨会话保留可执行上下文](03-local-skill-scenarios.md#handoff) |
+| `/implement` | 当已有 ready ticket 和 spec 时，用它作为外层执行单位完成修改、验证、review 和提交。 | [03 - 22 个本地 Skill 的场景速写：`/implement` 以 ticket 为外层执行单位](03-local-skill-scenarios.md#implement) |
+| `/improve-codebase-architecture` | 当代码结构开始显出压力、但还没有明确改造点时，用它发现架构健康问题并形成 tickets。 | [03 - 22 个本地 Skill 的场景速写：`/improve-codebase-architecture` 发现架构健康问题](03-local-skill-scenarios.md#improve-codebase-architecture) |
+| `/prototype` | 当 UI、状态模型或交互手感不确定时，用它写可丢弃原型回答一个具体设计问题。 | [03 - 22 个本地 Skill 的场景速写：`/prototype` 用可丢弃代码回答一个设计问题](03-local-skill-scenarios.md#prototype) |
+| `/research` | 当需要外部事实或资料依据时，用它把来源、观察和建议沉淀成可追溯 Markdown。 | [03 - 22 个本地 Skill 的场景速写：`/research` 把外部资料变成可追溯笔记](03-local-skill-scenarios.md#research) |
+| `/resolving-merge-conflicts` | 当 merge 或 rebase 冲突出现时，用它先理解双方意图，再做最小必要解决和验证。 | [03 - 22 个本地 Skill 的场景速写：`/resolving-merge-conflicts` 保留双方意图](03-local-skill-scenarios.md#resolving-merge-conflicts) |
+| `/setup-matt-pocock-skills` | 当一个仓库第一次使用这套 Skills 时，用它配置 issue tracker、triage labels 和 domain docs 等协作约定。 | [03 - 22 个本地 Skill 的场景速写：`/setup-matt-pocock-skills` 配置仓库协作约定](03-local-skill-scenarios.md#setup-matt-pocock-skills) |
+| `/tdd` | 当实现中有清晰行为可以锁定时，用它在 `/implement` 内部建立红绿重构循环。 | [03 - 22 个本地 Skill 的场景速写：`/tdd` 在实现内部建立红绿循环](03-local-skill-scenarios.md#tdd) |
+| `/teach` | 当你想把仓库变成学习环境时，用它按步骤讲解、练习并保留学习状态。 | [03 - 22 个本地 Skill 的场景速写：`/teach` 把仓库变成学习环境](03-local-skill-scenarios.md#teach) |
+| `/to-spec` | 当讨论已经稳定时，用它把 shared understanding 合成后续 tickets、implementation 和 review 可引用的 spec。 | [03 - 22 个本地 Skill 的场景速写：`/to-spec` 把稳定理解合成 buildable spec](03-local-skill-scenarios.md#to-spec) |
+| `/to-tickets` | 当已有 spec 但工作太大时，用它拆成可独立实现、可验证、带 blocking 关系的垂直切片。 | [03 - 22 个本地 Skill 的场景速写：`/to-tickets` 拆成可独立实现的垂直切片](03-local-skill-scenarios.md#to-tickets) |
+| `/triage` | 当外部来了原始 issue 时，用它判断入口质量、补充问题和是否 ready-for-agent。 | [03 - 22 个本地 Skill 的场景速写：`/triage` 处理外部来的原始 issue](03-local-skill-scenarios.md#triage) |
+| `/wayfinder` | 当目标巨大且未知点太多时，用它先画探索地图和 decision tickets，而不是直接写 spec 或实现。 | [03 - 22 个本地 Skill 的场景速写：`/wayfinder` 为巨大模糊工作画未知地图](03-local-skill-scenarios.md#wayfinder) |
+| `/writing-great-skills` | 当你想把自己的重复工作流写成 Skill 时，用它设计触发条件、步骤、产物和验证方式。 | [03 - 22 个本地 Skill 的场景速写：`/writing-great-skills` 把自己的流程写成 Skill](03-local-skill-scenarios.md#writing-great-skills) |
+
 ## 阅读与发布方式
 
 在线可访问仓库时，优先用 GitHub、Gitee 或其他仓库 Web UI 阅读，因为它们通常能稳定处理 Markdown、目录和跨文件链接。但 GitHub 对一些读者可能不够可靠，所以它不是唯一入口；本地阅读和离线包都应该同样成立。

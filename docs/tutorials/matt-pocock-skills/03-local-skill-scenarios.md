@@ -4,6 +4,8 @@
 
 这些场景仍然围绕 Todo 示例，但不要求都塞进同一个功能主线。主线 Skills 可以继续读第二篇；这里更像一本场景手册。
 
+<a id="ask-matt"></a>
+
 ## `/ask-matt`：不知道下一步该用哪个 Skill
 
 处境：你刚用 `/grill-me` 问清楚个人 Todo MVP，但还不确定下一步是写 spec、做 prototype，还是直接实现。
@@ -18,6 +20,8 @@
 可能的路由是：如果风险在交互手感，先 `/prototype`；如果需求已经稳定且要进入仓库，走 `/to-spec`；如果仍然有范围问题，继续 `/grill-me` 或升级到 `/grill-with-docs`。
 
 产物不是代码，而是下一步路线。它适合在你知道自己卡住、但不知道该进入哪个流程时使用。
+
+<a id="code-review"></a>
 
 ## `/code-review`：同时检查 Standards 与 Spec
 
@@ -35,6 +39,8 @@ Standards 轴会看仓库风格、模块边界、测试质量和明显代码风�
 
 产物是 review findings。当前 ticket 的验收失败应回到当前 ticket 修复；相关但独立的新想法应该变成新 ticket。
 
+<a id="codebase-design"></a>
+
 ## `/codebase-design`：讨论模块边界和深模块
 
 处境：标签筛选逻辑开始散落在多个 React component 里，测试也只能从 UI 入口绕进去。
@@ -51,6 +57,8 @@ Standards 轴会看仓库风格、模块边界、测试质量和明显代码风�
 
 产物通常是设计建议或改进 ticket，不是顺手重构整个仓库。
 
+<a id="diagnosing-bugs"></a>
+
 ## `/diagnosing-bugs`：先复现，再修 bug
 
 处境：Archive 视图按 `work` 标签筛选时漏掉了一部分归档任务。
@@ -66,6 +74,8 @@ agent 应先找到红色反馈：失败测试、复现步骤、日志或最小�
 
 产物是复现证据和修复方向。后续可以进入当前 bug ticket 的实现，或把独立发现写成新 ticket。
 
+<a id="domain-modeling"></a>
+
 ## `/domain-modeling`：把稳定术语和关键决定写下来
 
 处境：你已经确认 `Archived task` 不等于 `Completed task`，而且一个任务可以有多个标签。
@@ -80,6 +90,8 @@ agent 应先找到红色反馈：失败测试、复现步骤、日志或最小�
 `CONTEXT.md` 适合保存 glossary，例如 `Task`、`Tag`、`Archived task`、`Active task`。ADR 只记录高门槛决策，例如“归档状态独立于完成状态”。
 
 产物是共享语言。下一次 `/grill-with-docs`、`/to-spec` 或 `/implement` 都应该先读它，而不是重新猜术语。
+
+<a id="grill-me"></a>
 
 ## `/grill-me`：没有仓库上下文时先追问
 
@@ -97,6 +109,8 @@ agent 应先找到红色反馈：失败测试、复现步骤、日志或最小�
 
 产物是清晰范围。它适合轻量想法澄清；如果进入真实仓库并会影响术语或 ADR，就升级到 `/grill-with-docs`。
 
+<a id="grill-with-docs"></a>
+
 ## `/grill-with-docs`：带着仓库文档追问
 
 处境：已有 Todo 应用要加入标签、筛选、归档，这些概念会影响命名、数据结构和测试。
@@ -113,6 +127,8 @@ agent 会区分代码库事实和用户决策：已有 store 怎么组织是事�
 
 产物是 shared understanding、待更新的 domain language 和下一步建议。澄清稳定后再进 `/domain-modeling` 或 `/to-spec`。
 
+<a id="grilling"></a>
+
 ## `/grilling`：追问背后的纪律
 
 处境：你不是想调用某个高层命令，而是想让 agent 在任何需求澄清里问得更锋利。
@@ -127,6 +143,8 @@ agent 会区分代码库事实和用户决策：已有 store 怎么组织是事�
 它会把“你想要哪些功能”换成更有约束的问题：第一成功标准是什么、哪些常见功能第一版不做、哪个决定错了最贵、怎么判断够用了。
 
 产物是更清晰的决策边界。`/grill-me` 和 `/grill-with-docs` 都可以理解为把这套追问纪律放进不同上下文。
+
+<a id="handoff"></a>
 
 ## `/handoff`：跨会话保留可执行上下文
 
@@ -143,6 +161,8 @@ agent 会区分代码库事实和用户决策：已有 store 怎么组织是事�
 好的 handoff 不写长篇回忆录，而是指出现有 artifacts、当前状态、未解决问题和下一步。
 
 产物是交接摘要。它让新会话少重复解释，也减少长上下文导致的遗漏。
+
+<a id="implement"></a>
 
 ## `/implement`：以 ticket 为外层执行单位
 
@@ -162,6 +182,8 @@ agent 会区分代码库事实和用户决策：已有 store 怎么组织是事�
 
 产物是完成的 ticket 和提交。它不是“请写代码”的同义词，而是“请把这张执行单交付掉”。
 
+<a id="improve-codebase-architecture"></a>
+
 ## `/improve-codebase-architecture`：发现架构健康问题
 
 处境：Todo 功能连续迭代后，任务状态、筛选和视图逻辑越来越难改，但你还没有明确修哪一处。
@@ -176,6 +198,8 @@ agent 会区分代码库事实和用户决策：已有 store 怎么组织是事�
 它适合周期性健康检查。agent 应先报告架构压力和候选改进，再把工作变成可验证 ticket。
 
 产物通常是架构改进建议、设计讨论入口或后续 tickets，而不是一次巨大重构。
+
+<a id="prototype"></a>
 
 ## `/prototype`：用可丢弃代码回答一个设计问题
 
@@ -192,6 +216,8 @@ prototype 的重点是回答问题，不是搭正式架构。如果原型开始�
 
 产物是设计结论和指向原型的说明。结论通常回流到 `/to-spec`、ticket 验收标准，或在出现新决策时回到 `/grill-with-docs`。
 
+<a id="research"></a>
+
 ## `/research`：把外部资料变成可追溯笔记
 
 处境：你想参考主流任务管理工具如何区分 archive、complete 和 label/filter。
@@ -206,6 +232,8 @@ prototype 的重点是回答问题，不是搭正式架构。如果原型开始�
 它的产物应该有来源、观察和建议，而不是只在聊天里说“我查了”。研究结论也不直接跳到实现。
 
 如果研究改变需求理解，回到 `/grill-with-docs` 或 `/to-spec`；如果只影响拆票，回到 `/to-tickets`；如果只补背景，留作后续 review 依据。
+
+<a id="resolving-merge-conflicts"></a>
 
 ## `/resolving-merge-conflicts`：保留双方意图
 
@@ -222,6 +250,8 @@ prototype 的重点是回答问题，不是搭正式架构。如果原型开始�
 
 产物是冲突解决 diff、解释和验证结果。若冲突暴露更大的设计问题，再新开 `/codebase-design` 或改进 ticket。
 
+<a id="setup-matt-pocock-skills"></a>
+
 ## `/setup-matt-pocock-skills`：配置仓库协作约定
 
 处境：你第一次在一个仓库里使用 Matt Pocock Skills，不知道 issue tracker、triage labels 和 domain docs 放在哪里。
@@ -236,6 +266,8 @@ prototype 的重点是回答问题，不是搭正式架构。如果原型开始�
 它配置的是仓库约定，不是安装 Skills。典型产物包括 `AGENTS.md`、`docs/agents/issue-tracker.md`、`docs/agents/domain.md` 和 `docs/agents/triage-labels.md`。
 
 下一步通常是进入 `/grill-with-docs`，因为 agent 已经知道该读哪些项目约定。
+
+<a id="tdd"></a>
 
 ## `/tdd`：在实现内部建立红绿循环
 
@@ -252,6 +284,8 @@ prototype 的重点是回答问题，不是搭正式架构。如果原型开始�
 
 产物是测试保护下的行为变化。它通常运行在 `/implement` 内部，而不是在实现完成后补仪式。
 
+<a id="teach"></a>
+
 ## `/teach`：把仓库变成学习环境
 
 处境：你不只是要做完 Todo，而是想学会这一套 workflow。
@@ -266,6 +300,8 @@ prototype 的重点是回答问题，不是搭正式架构。如果原型开始�
 `/teach` 会保留学习状态：你学过什么、练过什么、下一步该复习什么。它适合把一次教程阅读变成持续练习。
 
 产物是学习计划、练习反馈和后续复习点。
+
+<a id="to-spec"></a>
 
 ## `/to-spec`：把稳定理解合成 buildable spec
 
@@ -282,6 +318,8 @@ prototype 的重点是回答问题，不是搭正式架构。如果原型开始�
 
 产物是 spec。下一步通常是 `/to-tickets`。
 
+<a id="to-tickets"></a>
+
 ## `/to-tickets`：拆成可独立实现的垂直切片
 
 处境：Todo 标签功能 spec 已经稳定，但一次性交给 agent 实现太大。
@@ -296,6 +334,8 @@ prototype 的重点是回答问题，不是搭正式架构。如果原型开始�
 好的 ticket 不是横向层切片。它应尽量贯穿数据、行为、UI 或接口、测试和验收，并能在 fresh context 中完成。
 
 产物是 ticket 文件和 blocking 关系。下一步是领取 frontier 上 unblocked 的 ticket，用 `/implement` 执行。
+
+<a id="triage"></a>
 
 ## `/triage`：处理外部来的原始 issue
 
@@ -313,6 +353,8 @@ Todo 列表太乱了，希望能整理一下。
 
 产物是 triage label、补充问题或可继续处理的 brief。
 
+<a id="wayfinder"></a>
+
 ## `/wayfinder`：为巨大模糊工作画未知地图
 
 处境：Todo App 可能要升级成轻量团队任务管理，不确定权限、协作、通知、审计和同步怎么做。
@@ -326,6 +368,8 @@ Todo 应用可能要从个人工具升级成轻量团队任务管理。
 ```
 
 它产出探索地图，不产出实现计划。解决 map issue 后，结论通常回到 `/to-spec` 或 `/to-tickets`；如果改变领域语言，再补 `/domain-modeling`。不要把 `/wayfinder` 描述成通常回到 `/grill-with-docs`。
+
+<a id="writing-great-skills"></a>
 
 ## `/writing-great-skills`：把自己的流程写成 Skill
 
