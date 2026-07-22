@@ -4,7 +4,7 @@
 
 **Blocked by:** 02 - 写入门篇：从 Todo MVP 理解 Codex Skills; 03 - 写工程化篇主链路：从 Setup 到 Code Review; 04 - 补充特殊场景 Skills 与实践跳转.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [x] Verify `docs/tutorials/matt-pocock-skills/README.md` exists.
 - [x] Verify `docs/tutorials/matt-pocock-skills/01-codex-skills-basics.md` exists.
@@ -30,3 +30,7 @@
 - Verified the Todo examples progress consistently from a personal Todo MVP to an existing Todo app adding tags, filtering, and archiving.
 - Verified `/setup-matt-pocock-skills`, `/grill-with-docs`, `/implement` plus `/tdd`, and `/triage` are described with the intended boundaries.
 - Added a short README clarification distinguishing user-invoked outer workflows from lower-level supporting disciplines.
+
+### 2026-07-22 - Final verification
+
+- Re-verified the three tutorial files, README links and anchors, Skill coverage, workflow boundary notes, and Todo example progression; all acceptance checks pass, so this ticket is resolved.
