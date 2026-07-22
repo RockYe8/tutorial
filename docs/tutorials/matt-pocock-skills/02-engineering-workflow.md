@@ -113,6 +113,12 @@ docs/adr/0001-archive-is-independent-from-completion.md
 
 这一步不是文档洁癖。它是在减少未来 prompt 的长度：下次你说“archive task”，agent 应该先读 `CONTEXT.md` 和 ADR，而不是重新猜你的意思。
 
+这里有两个边界要守住。
+
+第一，`CONTEXT.md` 是 glossary，不是 spec，也不是 scratchpad。它应该定义稳定术语，比如 `Archived task` 是什么；不要把待办事项、实现方案、开放问题都塞进去。那些内容应该进入 spec、ticket、issue comment 或 handoff。
+
+第二，ADR 应该稀有。只有一个决定难逆转、没有上下文会显得反直觉、并且真的包含取舍时，才值得写 ADR。比如“归档独立于完成状态”值得记录；“按钮放左边还是右边”通常不值得写成架构决策。
+
 <a id="wayfinder"></a>
 ## 用 `/wayfinder` 先画出未知地图
 
@@ -135,6 +141,8 @@ Todo 应用可能要从个人工具升级成轻量团队任务管理。
 
 `/wayfinder` 的产物不是实现计划，而是探索计划。它适合“我们还不知道自己不知道什么”的阶段。
 
+当 `/wayfinder` 的某些问题被解决后，不要把 map issue 直接当实现 ticket。先把决策回流到主线：如果它改变了需求，回到 `/to-spec`；如果它只补足了拆票依据，回到 `/to-tickets`；如果它改变了领域语言，再补一次 `/domain-modeling`。Wayfinder 的目标是清雾，不是绕过 spec。
+
 <a id="to-spec"></a>
 ## 用 `/to-spec` 合成正式规格
 
@@ -156,6 +164,12 @@ Todo 应用可能要从个人工具升级成轻量团队任务管理。
 - 怎么验收：默认列表隐藏归档任务；标签筛选只看 active tasks；Archive 视图可筛选 archived tasks；归档不改变完成状态。
 
 这份 spec 是后续 `/to-tickets` 和 `/code-review` 的参照物。没有 spec，review 只能检查“代码看起来对不对”；有 spec，review 才能检查“是否实现了当初说好的东西”。
+
+在 Todo 例子里，`/to-spec` 不应该重新问“归档到底是不是完成”。这个问题已经在 `/grill-with-docs` 里回答过，并且可能已经沉淀到 `CONTEXT.md` 或 ADR。`/to-spec` 要做的是把这条共识写成验收标准：归档不改变完成状态；默认列表隐藏归档任务；Archive 视图可以查看和筛选归档任务。
+
+可以把这里的 spec 理解成一份共识契约。`/grill-with-docs` 负责追问、读仓库、识别事实和决策；`/domain-modeling` 负责沉淀稳定语言；`/to-spec` 不重新访谈，而是把已经达成的 shared understanding 写成后续工作能引用的 artifact。
+
+所以 spec 稳定之后，主要精力不应该继续反复润色 spec 文本，而是检查下一步的 tickets 是否真的能执行、验证和并行推进。Spec 定义 destination；tickets 才是 journey。
 
 <a id="to-tickets"></a>
 ## 用 `/to-tickets` 拆垂直切片
@@ -182,6 +196,20 @@ spec 仍然太大，不适合一次交给 agent AFK 实现。`/to-tickets` 会�
 
 这里的 issue 不是只指 bug，而是任何被跟踪的工作项。Spec 描述“为什么和验收”；ticket 是“可由 agent 执行的一块工作”；comments 记录执行事实和交接信息；blocking relationships 描述顺序；parent-child relationships 描述拆解。
 
+<a id="ticket-review-checklist"></a>
+### Review tickets 的六个问题
+
+`/to-tickets` 生成之后，不要只看数量是否合理。真正要 review 的是每张 ticket 是否适合一个 fresh context 里的 agent 执行：
+
+- 它是不是 vertical slice：能贯穿数据、行为、UI 或接口、测试和验收，而不是只做 schema、只做 API、只做 UI。
+- 它是不是 tracer bullet：先打通一条小的端到端路径，暴露真实集成问题，而不是一次铺完整层。
+- 它有没有 blocking edges：谁先谁后、哪些能并行，应该在 ticket 里看得出来。
+- 它能不能 fresh context 完成：agent 不需要依赖长聊天记忆，ticket body、spec 和 comments 已经足够。
+- 它能不能独立交付反馈：完成后能 demo、能跑测试、能被验收。
+- 它是不是太大：如果一个 ticket 同时包含多个独立反馈路径，就应该拆小。
+
+Todo 标签功能里，`建立标签数据模型` 如果只改数据层，可能太横向；`让任务可以创建并显示一个标签，同时用测试锁住保存行为` 更像 tracer bullet。后者小一点，但能更早暴露 store、UI、持久化和测试接缝是否顺。
+
 <a id="implement"></a>
 ## 用 `/implement` 执行一个 ticket
 
@@ -200,6 +228,19 @@ spec 仍然太大，不适合一次交给 agent AFK 实现。`/to-tickets` 会�
 `/implement` 是外层执行 Skill。也就是说，它负责这整个 ticket 的生命周期：读上下文、理解验收、修改文件、运行测试、检查 diff、更新 issue 评论、提交当前 ticket。它不是“请写代码”的同义词，而是“请把这个 ticket 交付掉”。
 
 在实现过程中，它可以在合适的接缝调用 `/tdd`。例如筛选逻辑很适合先写失败测试；但更新一篇 Markdown 教程这样的纯文档 ticket，就不一定适合 TDD，验证重点会变成链接、清单和 review。
+
+三者的关系可以这样看：
+
+```text
+spec + ticket
+  -> /implement
+       -> 在适合的行为接缝使用 /tdd
+       -> 经常跑 typecheck、单测或页面检查
+       -> 完成后调用 /code-review
+       -> 更新 issue comment，提交当前 ticket
+```
+
+`/implement` 管外层交付，`/tdd` 管红绿反馈，`/code-review` 管交付后的两轴检查。它们不是三条并列路线，而是一条 ticket 生命周期里的不同层次。
 
 <a id="tdd"></a>
 ## `/tdd` 是实现内部的红绿循环
@@ -232,6 +273,19 @@ then:
 
 这能保护实现不偷懒：不能只按标签筛选，也不能把 archived task 混进默认结果。`/implement` 管交付边界，`/tdd` 管反馈循环；一个是外层执行，一个是内部方法。
 
+<a id="feedback-layers"></a>
+## 三层反馈：不只看测试是否绿
+
+Todo 标签功能交给 AI 做时，反馈至少有三层。
+
+第一层是底层反馈：TDD、typecheck、单测、完整测试套件、浏览器或手工检查。它回答“这个行为有没有真的跑起来”。比如 active task 的标签筛选必须用失败测试先证明规则存在，再实现。
+
+第二层是架构反馈：tracer bullet 打通后，观察模块边界、测试接缝、数据流和集成路径是否合理。比如筛选逻辑如果散在多个 React component 里，就说明后续可能需要 `/codebase-design` 或 `/improve-codebase-architecture`。
+
+第三层是业务反馈：用 spec、ticket 验收标准和 `/code-review` 的 Spec 轴检查是否做了正确的东西。比如代码通过测试，但把 archived task 也混进默认筛选结果，就仍然不符合业务规则。
+
+这三层反馈让 `/implement` 不只是“把代码写完”，而是每个切片都能被验证、被审查、被继续交接。
+
 <a id="code-review"></a>
 ## 用 `/code-review` 关闭反馈环
 
@@ -250,6 +304,17 @@ Spec 来源是 .scratch/todo-tags/spec.md 和当前 ticket。
 ```
 
 这一步特别重要，因为 AI 很擅长写出局部合理的代码，却可能偏离原始意图。比如它实现了标签筛选，却忘了“默认筛选不包含归档任务”；或者它做了 Archive 视图，却把 completed 和 archived 绑定在一起。`/code-review` 的价值就是把这些偏差在合并前暴露出来。
+
+<a id="ticket-lifecycle"></a>
+## Ticket 生命周期与 QA 失败处理
+
+Review 或 QA 发现问题时，先判断它属于哪一种。
+
+如果失败属于当前 ticket 的验收标准，就不要新开话题把它绕过去。把失败证据写回当前 ticket 的 comment：复现步骤、失败测试、截图、review finding 或缺失的验收项，然后继续修这个 ticket。比如 `03-filter-active-tasks-by-tag` 忘了排除 archived tasks，这就是当前 ticket 没过。
+
+如果发现的是相关但独立的新需求、优化或 bug，就新建 ticket，而不是塞进当前 ticket。比如做标签筛选时突然想到“标签应该支持颜色和排序”，这很可能是新切片。这样做的目的不是流程洁癖，而是防止 scope creep 把一个 agent session 推到过大的上下文里。
+
+Issue comment 是过程证据层。按本仓库约定，它追加在对应 issue 文件的 `## Comments` heading 下。它不替代 spec，也不替代代码；它记录当前 ticket 执行中发生了什么、验证了什么、失败在哪里、下一位 agent 应该从哪里继续。
 
 <a id="triage"></a>
 ## 用 `/triage` 处理原始输入
@@ -308,6 +373,17 @@ Archive 视图按 work 标签筛选时结果不完整。
 
 `/research` 的关键是可追溯：结论要带来源，产物要留在仓库，而不是只留在一次聊天里。
 
+<a id="shaping-feedback"></a>
+## 让 shaping 结果回流
+
+`/wayfinder`、`/research` 和 `/prototype` 都不是主线的替代品。它们回答的是“我们还缺哪种输入”。
+
+Todo 功能里，如果 `/research` 发现主流工具通常把 complete 和 archive 分开处理，这个结论应该回到 `/grill-with-docs` 或 `/to-spec`，变成明确需求和验收标准。不要让 research note 直接跳到 implementation。
+
+如果 `/prototype` 证明顶部 chip 比侧边栏更适合标签筛选，也不要把 prototype 代码直接硬化进主线。先把结论写回 spec 或 ticket：筛选入口放在哪里、交互如何验收、哪些原型代码明确丢弃。
+
+如果 `/wayfinder` 解决了团队 Todo 的权限模型问题，它的答案应该沉淀成决策、spec 或后续 tickets。Map 是探索工具，不是最终交付物。
+
 <a id="improve-codebase-architecture"></a>
 ## 用 `/improve-codebase-architecture` 找架构改进点
 
@@ -322,6 +398,8 @@ Archive 视图按 work 标签筛选时结果不完整。
 
 它不应该随手重构一大片代码，而是先发现架构压力，再把改进变成可排期、可验证的工作。
 
+交付一个功能后，不要立刻忘掉架构健康。AI 让代码增量变快，也会让边界混乱变快。每完成一波 tickets，可以回头看一次：新逻辑有没有让某个 component 背太多领域判断？测试接缝是不是变清楚了？是否出现了值得加深的模块？这些问题适合交给 `/improve-codebase-architecture` 或 `/codebase-design`，再沉淀成新的改进 tickets。
+
 <a id="codebase-design"></a>
 ## 用 `/codebase-design` 讨论模块设计
 
@@ -335,6 +413,21 @@ Archive 视图按 work 标签筛选时结果不完整。
 ```
 
 这类讨论会用“深模块”“接口”“接缝”等词汇帮助你做设计判断。它服务的是模块形状，不是直接实现整个功能。
+
+<a id="smart-zone"></a>
+## 别把所有事情塞进同一个上下文
+
+AI 工作不是上下文越长越好。会话越长，agent 越容易丢掉细节之间的关系；ticket 越大，越容易在实现途中开始猜。
+
+Todo 例子里，如果一个 ticket 同时要求“标签管理、筛选、归档、Archive 视图、迁移旧数据、重做 UI”，它很可能已经太大。症状通常是：agent 需要反复重读背景、测试范围说不清、review 发现遗漏验收项、或者每次修一个地方又撞出另一个边界。
+
+这时有三种处理方式：
+
+- 用 `/handoff` 压缩当前 live thread，引用已有 spec、ADR、ticket 和 diff，让下一次会话从清晰边界继续。
+- 回到 `/to-tickets` 拆小 ticket，让每张只覆盖一个可独立反馈路径。
+- 如果问题本身仍然雾很大，用 `/wayfinder`、`/research` 或 `/prototype` 先回答未知点。
+
+不要把 handoff 看成失败。它是让下一个 agent 重新进入清醒上下文的工程动作。
 
 <a id="resolving-merge-conflicts"></a>
 ## 用 `/resolving-merge-conflicts` 解决冲突

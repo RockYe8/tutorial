@@ -6,6 +6,49 @@
 
 Matt Pocock 在 [AI Hero Skills Catalog](https://www.aihero.dev/skills-catalog) 里把 Skill 描述成一种 focused, repeatable workflow；[`mattpocock/skills`](https://github.com/mattpocock/skills) 这个仓库也把它们放在“真实工程纪律”里理解，而不是把它们当成一串神奇咒语。这个心智模型很重要：Skill 不是“更长的 prompt”，而是“下次遇到同类问题时，agent 应该重复执行的工作方式”。
 
+<a id="before-you-start"></a>
+## 开始前：先安装整套 Skills
+
+如果你想跟着这组教程练习，建议先安装完整的 Matt Pocock Skills，而不是只挑 `/grill-me` 或 `/implement` 几个名字。原因很简单：这套教程讲的是组合工作流，后面的主链路会把澄清、spec、tickets、实现、测试、review、handoff 串起来看。
+
+在线安装时，可以使用公开安装页和仓库 README 推荐的 skills.sh 命令。对 Codex，本教程使用：
+
+```powershell
+npx skills@latest add mattpocock/skills
+```
+
+安装完成后，开启一个新的 Codex 会话，让 agent 重新发现可用 Skills。在 Windows 上，Codex 的本地 Skill 通常会出现在类似这样的路径：
+
+```text
+C:\Users\<your-username>\.codex\skills\grill-me\SKILL.md
+```
+
+如果你使用 Claude Code，在线安装方式会随 Claude Code 当前的 Skill/plugin 支持而变化；请以 Matt Pocock Skills README 或你使用的安装页为准。安装完成后，Windows 上 Claude Code 的本地 Skill 目录通常会是：
+
+```text
+C:\Users\<your-username>\.claude\skills\grill-me\SKILL.md
+```
+
+如果你处在离线环境，也可以手动复制。注意要复制完整 Skill 文件夹，而不是只复制一个 `SKILL.md` 文件。例如 `grill-me` 文件夹里如果有 `references/`、`scripts/` 或其他辅助文件，也要一起放进目标 agent 的 skills 目录。复制后，开启新会话或重启对应 agent，让它重新加载技能列表。
+
+手动复制后的目录形状应该像这样：
+
+```text
+C:\Users\<your-username>\.codex\skills\grill-me\SKILL.md
+C:\Users\<your-username>\.codex\skills\grill-with-docs\SKILL.md
+C:\Users\<your-username>\.codex\skills\to-spec\SKILL.md
+```
+
+Claude Code 则对应：
+
+```text
+C:\Users\<your-username>\.claude\skills\grill-me\SKILL.md
+C:\Users\<your-username>\.claude\skills\grill-with-docs\SKILL.md
+C:\Users\<your-username>\.claude\skills\to-spec\SKILL.md
+```
+
+这篇教程不会详细比较所有安装渠道。你只需要先确保：完整 Skills 已放到当前 agent 能读取的位置，并且新会话里能看到这些 Skill 名称。
+
 <a id="skills-as-workflows"></a>
 ## Skills 是可复用工作流，不是魔法 prompt
 
@@ -44,6 +87,8 @@ Skill 改变的是这个起手式。你不是说“现在写代码”，而是�
 | 依赖 agent 现场发挥 | 依赖可重复的步骤 |
 | 容易过早实现 | 先确认目标、边界和验收 |
 | 结果常常是一次性的 | 结果能沉淀成 spec、ticket、handoff 或学习记录 |
+
+所以，Skill 不是一个更厉害的“万能 prompt”，也不是让 agent 全自动接管项目的按钮。更准确地说，它是一个小而可组合的 workflow module：你仍然要决定什么时候进入它、什么时候停止、产物要流向哪里。
 
 <a id="grill-me"></a>
 ## 用 `/grill-me` 把模糊想法问清楚
@@ -93,6 +138,8 @@ Codex: 完成任务后是隐藏、划掉，还是进入完成列表？
 什么时候应该升级到 `/grill-with-docs`？
 
 当你已经在真实仓库里工作，并且这些讨论会影响代码命名、领域术语、ADR 或后续 tickets 时，就该换成 `/grill-with-docs`。比如第二篇会继续这个 Todo 例子：已有应用要加入标签、筛选和归档，这时“任务”“标签”“归档”的含义需要进入仓库文档，而不只是留在聊天里。
+
+还有一种情况不要硬靠 `/grill-me` 继续问：如果不确定的是高保真的 UI 手感、复杂状态流转或交互布局，文字追问很快会变成空转。比如你不知道 Today/全部任务切换到底顺不顺手，可以先用 `/prototype` 做一个可丢弃原型，拿到手感反馈后再回到 `/grill-me`、`/grill-with-docs` 或 `/to-spec`。
 
 <a id="grilling"></a>
 ## `/grilling` 是追问背后的工作纪律
