@@ -4,7 +4,7 @@
 
 **Blocked by:** None - can start immediately.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [x] Create `docs/tutorials/matt-pocock-skills/README.md`.
 - [x] Explain who the tutorial series is for: the user as personal learning notes and other developers learning Matt Pocock Skills.
@@ -17,3 +17,4 @@
 ## Comments
 
 - 2026-07-21: Implemented by Codex. Added the tutorial navigation README with learning path notes, Todo running-example framing, and a situation-to-Skill lookup table pointing at planned anchors in the two article files.
+- 2026-07-22: Tracker cleanup. Marked resolved after final project verification confirmed the README exists and the tutorial series has been completed.

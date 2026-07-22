@@ -4,7 +4,7 @@
 
 **Blocked by:** 01 - 搭建教程目录与 README 导航页; 02 - 写入门篇：从 Todo MVP 理解 Codex Skills.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [x] Create `docs/tutorials/matt-pocock-skills/02-engineering-workflow.md`.
 - [x] Explain why AI programming needs workflow artifacts, not only faster code generation.
@@ -24,3 +24,4 @@
 ## Comments
 
 - 2026-07-22: Completed by agent. Implemented `docs/tutorials/matt-pocock-skills/02-engineering-workflow.md` as the engineering workflow article. The article uses the existing Todo app adding tags, filtering, and archiving as the running example; covers setup artifacts, `/grill-with-docs`, `/domain-modeling`, `/wayfinder`, `/to-spec`, `/to-tickets`, `/implement`, `/tdd`, `/code-review`, and supporting scenarios; and explains `/implement` as the outer execution Skill with `/tdd` as an internal method. Updated README status for article 02 to completed.
+- 2026-07-22: Tracker cleanup. Marked resolved after final project verification confirmed the engineering workflow article exists and the tutorial series has been completed.
