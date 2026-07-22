@@ -10,11 +10,11 @@
 
    适合第一次接触 Codex Skills 的读者。你会看到普通 prompt 为什么容易让 AI 过早动手，以及 `/grill-me`、`/handoff`、`/ask-matt`、`/teach` 这类 Skills 如何把一次聊天变成更稳定的学习和澄清流程。
 
-2. [02 - 从 Setup 到 Code Review 的工程主链路](02-engineering-workflow.md)（计划中）
+2. [02 - 从 Setup 到 Code Review 的工程主链路](02-engineering-workflow.md)（已完成）
 
    适合已经在仓库里工作的读者。它会从 `/setup-matt-pocock-skills` 开始，走过 `/grill-with-docs`、`/wayfinder`、`/to-spec`、`/to-tickets`、`/implement`、`/tdd` 和 `/code-review`，展示一个 Todo 功能怎样被拆成有上下文、有标准、有验收方式的开发工作。
 
-这两个目标文件还没有完全写完时，本 README 仍然可以作为路线图使用：表格里的链接指向计划章节锚点，后续文章应该保留这些稳定标题，方便读者从自己的处境直接跳到对应场景。
+本 README 可以作为路线图使用：表格里的链接指向稳定章节锚点，方便读者从自己的处境直接跳到对应场景。
 
 ## 我遇到 X，该用哪个 Skill？
 
