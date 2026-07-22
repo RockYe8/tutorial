@@ -4,7 +4,7 @@
 
 **Blocked by:** 06 - 补充 Matt Pocock / AI Hero 工作流使用心得.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 ## Context
 
@@ -100,22 +100,22 @@ Tutorial body should ensure:
 
 ## Acceptance Criteria
 
-- [ ] README says the tutorial is not Matt Pocock official documentation or an official translation.
-- [ ] README has no "可复制调用模板" section.
-- [ ] README directs readers to contextual tutorial sections for example invocation text.
-- [ ] README second column in scenario routing uses "建议下一步" or equivalent wording, not "优先使用的 Skill".
-- [ ] README scenario routing is split into four groups: 新手入门, 主链路, Shaping 与回流, 维护与异常.
-- [ ] `/research`, `/prototype`, and `/wayfinder`回流 are represented as separate rows or clearly separate guidance.
-- [ ] README includes a full quick index for all 22 local effective Skills listed in this ticket.
-- [ ] Each of the 22 local effective Skills links to a tutorial section or is explicitly marked as newly added coverage.
-- [ ] Every local effective Skill has at least one accurate usage scenario in the tutorial series.
-- [ ] No scenario claims that `/wayfinder` normally returns to `/grill-with-docs`.
-- [ ] README includes recommended reading/distribution guidance that does not depend on GitHub being reachable.
-- [ ] README states or implies Markdown is the source of truth and generated HTML is a release artifact.
-- [ ] The tutorial does not use skills.sh's 55-item list as the full effective Skill list.
-- [ ] Obsolete or historical names are not added as primary tutorial entries.
-- [ ] README links are checked for relative path correctness.
-- [ ] Existing article anchors used from README still exist.
+- [x] README says the tutorial is not Matt Pocock official documentation or an official translation.
+- [x] README has no "可复制调用模板" section.
+- [x] README directs readers to contextual tutorial sections for example invocation text.
+- [x] README second column in scenario routing uses "建议下一步" or equivalent wording, not "优先使用的 Skill".
+- [x] README scenario routing is split into four groups: 新手入门, 主链路, Shaping 与回流, 维护与异常.
+- [x] `/research`, `/prototype`, and `/wayfinder`回流 are represented as separate rows or clearly separate guidance.
+- [x] README includes a full quick index for all 22 local effective Skills listed in this ticket.
+- [x] Each of the 22 local effective Skills links to a tutorial section or is explicitly marked as newly added coverage.
+- [x] Every local effective Skill has at least one accurate usage scenario in the tutorial series.
+- [x] No scenario claims that `/wayfinder` normally returns to `/grill-with-docs`.
+- [x] README includes recommended reading/distribution guidance that does not depend on GitHub being reachable.
+- [x] README states or implies Markdown is the source of truth and generated HTML is a release artifact.
+- [x] The tutorial does not use skills.sh's 55-item list as the full effective Skill list.
+- [x] Obsolete or historical names are not added as primary tutorial entries.
+- [x] README links are checked for relative path correctness.
+- [x] Existing article anchors used from README still exist.
 
 ## Non-goals
 
@@ -138,3 +138,6 @@ Tutorial body should ensure:
 
 ## Comments
 
+- 2026-07-22: Marked resolved as the parent summary ticket after confirming its acceptance criteria are covered by completed child work 08-12.
+- Coverage summary: `81720d9` merged the README navigation restructure for ticket 08; `e451642` merged the supplemental 22-Skill scenario article for ticket 09; `34c4b30` added the README quick index for ticket 10; `af8bffd` added online/local/offline reading and release guidance for ticket 11; `657f6a3` completed ticket 12 verification for links, anchors, navigation wording, 22-Skill coverage, and source-of-truth/release-artifact guidance.
+- Verification basis: current README has the official-docs disclaimer, no standalone `可复制调用模板` section, contextual links, four grouped routing tables with `建议下一步`, separated `/research`, `/prototype`, and `/wayfinder`回流 guidance, a complete 22-Skill quick index, and reading/distribution guidance that does not require GitHub. Current tutorial scenarios cover all 22 local effective Skills, avoid obsolete skills.sh-only primary entries, and do not route `/wayfinder` normally back to `/grill-with-docs`.
