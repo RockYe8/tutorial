@@ -89,6 +89,14 @@ README 只负责帮你找路。可模仿的调用文本放在对应教程场景�
 | 合并或 rebase 时出现冲突，需要保留双方意图 | 用 `/resolving-merge-conflicts` 解决冲突 | [02 - 从 Setup 到 Code Review 的工程主链路：用 `/resolving-merge-conflicts` 解决冲突](02-engineering-workflow.md#resolving-merge-conflicts) |
 | 我以后想写自己的 Skill | 用 `/writing-great-skills` 学写可重复 workflow | [02 - 从 Setup 到 Code Review 的工程主链路：用 `/writing-great-skills` 学写 Skill](02-engineering-workflow.md#writing-great-skills) |
 
+## 阅读与发布方式
+
+在线可访问仓库时，优先用 GitHub、Gitee 或其他仓库 Web UI 阅读，因为它们通常能稳定处理 Markdown、目录和跨文件链接。但 GitHub 对一些读者可能不够可靠，所以它不是唯一入口；本地阅读和离线包都应该同样成立。
+
+本地写作和维护时，建议用 VS Code 或 Cursor 直接编辑这些 Markdown 文件。Markdown 是这组教程唯一需要手工维护的 source of truth；生成出来的 HTML 只作为 release artifact 发布，不要手动修改 HTML 后再反向同步。需要离线分发时，推荐发布一个由当前 git commit 或 tag 生成的静态 HTML 包，方便读者在网络不稳定时完整浏览教程，而不要求他们能访问 GitHub 或 Gitee。
+
+PDF 更适合归档、打印或从头到尾顺序阅读，不是首选的导航格式。使用本地 Markdown 预览时也要注意：跨文件链接通常能打开目标文件，但不一定总能滚动到精确锚点；所以 README 的链接文字会同时写出文章名和目标小节，方便你快速定位。
+
 ## 推荐读法
 
 如果你是第一次接触，按第一篇从头读到尾，然后回到上面的查询表，把自己的真实处境对应到一个 Skill。不要急着把所有 Skills 都用一遍；先学会在正确时机让 AI 慢下来、问清楚、留下可复用上下文。
