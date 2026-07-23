@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "install:tutorial-html-reminder": "node scripts/install-tutorial-html-reminder.cjs",
+    "test": "node test/tutorial-html-export.test.cjs",
+    "export:tutorial-html": "node scripts/export-tutorial-html.cjs"
+  }
+}

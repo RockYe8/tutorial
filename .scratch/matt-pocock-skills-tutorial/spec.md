@@ -8,7 +8,7 @@ The user wants to create a practical Chinese tutorial series that helps develope
 
 The target reader may not understand Codex Skills yet. They need a tutorial that starts from a simple, familiar example and gradually shows how Skills change the way an agent works: clarifying ideas, preserving context, creating specs, splitting tickets, implementing with tests, and reviewing against both repository standards and the original spec.
 
-The tutorial should also serve the user personally as reusable learning notes while being clear enough to share with others. The tutorial now needs a clearer release strategy: Markdown remains the single source of truth, while generated HTML is a shareable offline release artifact.
+The tutorial should also serve the user personally as reusable learning notes while being clear enough to share with others. The tutorial now needs a clearer export strategy: Markdown remains the single source of truth, while generated HTML is a local offline artifact that can be opened directly in a browser.
 
 ## Solution
 
@@ -31,6 +31,10 @@ The writing should be scenario-driven. Each Skill should be introduced through a
 - Which step comes next.
 
 The series should cover every locally installed, currently effective Matt Pocock Skill with at least one accurate scenario. Main workflow Skills should receive deeper treatment; supporting Skills may receive shorter but still concrete scenarios.
+
+Add a lightweight local HTML export workflow for the tutorial. The workflow should let the maintainer run a single command to generate a folder of static HTML files from the Markdown source. The generated files are for local offline reading: readers should be able to open `index.html` directly from the filesystem without running a server, installing Node, or accessing GitHub.
+
+The export workflow should stay intentionally small. It should use a lightweight Node script rather than Pandoc or a full documentation framework such as VitePress, MkDocs, Docusaurus, or GitHub Pages. The goal is not to build a public documentation website; it is to make the Markdown tutorial easy to export into a browsable local HTML package when needed.
 
 ## User Stories
 
@@ -77,17 +81,29 @@ The series should cover every locally installed, currently effective Matt Pocock
 41. As a reader, I want scenario routing grouped by situation, so that I can scan the README without reading one long table.
 42. As a reader, I want `/research`, `/prototype`, and `/wayfinder` return paths distinguished clearly, so that I do not send their outputs to the wrong next step.
 43. As a reader, I want README links to name both the article and the target section, so that local preview limitations do not make navigation confusing.
-44. As a maintainer, I want Markdown to remain the single source of truth, so that generated HTML releases cannot drift from editable source documents.
-45. As a maintainer, I want an offline HTML release option, so that the tutorial can be shared even when GitHub access is unreliable.
-46. As a maintainer, I want GitHub or Gitee to be treated as distribution channels rather than build prerequisites, so that local releases remain possible without network access.
+44. As a maintainer, I want Markdown to remain the single source of truth, so that generated HTML exports cannot drift from editable source documents.
+45. As a maintainer, I want an offline HTML export option, so that the tutorial can be shared even when GitHub access is unreliable.
+46. As a maintainer, I want GitHub or Gitee to be treated as reading and feedback channels rather than build prerequisites, so that local exports remain possible without network access.
+47. As a maintainer, I want a lightweight local export command, so that I can regenerate the tutorial HTML package without setting up a full documentation site.
+48. As a maintainer, I want the exported HTML to be a local folder of browser-openable files, so that readers can double-click `index.html` and read offline without starting a server.
+49. As a maintainer, I want the HTML export output excluded from git, so that generated files do not become a second editable source.
+50. As a maintainer, I want a post-commit reminder when tutorial Markdown changes, so that I am prompted to refresh the local export without slowing every commit by automatically building it.
+51. As a maintainer, I want GitHub to publish the Markdown source only for now, so that online reading and feedback stay simple while release package hosting is deferred.
 
 ## Implementation Decisions
 
 - The tutorial series will be written as Markdown files in `docs/tutorials/matt-pocock-skills/`.
 - Markdown files are the only editable source of truth.
-- Generated HTML is a release artifact and must not be hand-edited.
-- Git commits or tags should be usable as release source points for generated HTML packages.
-- GitHub and Gitee may be used for public reading, feedback, and distribution, but local Markdown plus git history remains the build source.
+- Generated HTML is a local export artifact and must not be hand-edited.
+- The local HTML export should be generated by a lightweight Node script, not by Pandoc and not by a full documentation-site framework.
+- The export command should be named `npm run export:tutorial-html`.
+- The export output should be written to `dist/matt-pocock-skills-html/`.
+- The export output should not be committed to git.
+- The exported package should be usable as local files: opening `index.html` in a browser should be enough to read the tutorial offline.
+- The export workflow should rewrite tutorial-relative Markdown links so local HTML navigation works across generated pages.
+- A local post-commit hook should remind the maintainer when `docs/tutorials/matt-pocock-skills/` Markdown files changed, but it should not automatically build the HTML export.
+- Git commits may be used as source points for generated local HTML exports.
+- GitHub and Gitee may be used for public reading and feedback, but local Markdown plus git history remains the source. GitHub should publish the Markdown source only for now, not generated HTML release assets.
 - The core tutorial files remain:
   - `README.md`
   - `01-codex-skills-basics.md`
@@ -146,7 +162,7 @@ The series should cover every locally installed, currently effective Matt Pocock
   - `/wayfinder` conclusions normally return to `/to-spec` or `/to-tickets`; they should not be described as normally returning to `/grill-with-docs`.
 - The tutorial should include recommended reading and distribution guidance:
   - GitHub or repository web UI when online access is available.
-  - Offline static HTML package for release distribution.
+  - Offline static HTML export for local sharing when needed.
   - VS Code or Cursor for local Markdown authoring, with a note that local preview may not always scroll to cross-file anchors.
 - The tutorial should treat issue tracker concepts consistently:
   - Issue means a tracked work item, not only a bug.
@@ -172,7 +188,12 @@ The series should cover every locally installed, currently effective Matt Pocock
 - Verify that `/research`, `/prototype`, and `/wayfinder`回流 guidance is not collapsed into one ambiguous row.
 - Verify that `/wayfinder` is not described as normally returning to `/grill-with-docs`.
 - Verify that README states the tutorial is not official Matt Pocock documentation or an official translation.
-- Verify that Markdown is identified as source of truth and generated HTML as release artifact.
+- Verify that Markdown is identified as source of truth and generated HTML as a local export artifact.
+- Verify that the local HTML export command generates browser-openable files under `dist/matt-pocock-skills-html/`.
+- Verify that exported HTML is not required to be committed to git.
+- Verify that exported links between tutorial pages navigate to generated `.html` files rather than source `.md` files.
+- Verify that opening the generated `index.html` from the filesystem does not require a local server.
+- Verify that the post-commit reminder detects tutorial Markdown changes and prints a reminder without running the export command.
 - Verify that the main Todo workflow appears consistently across the README and both articles.
 - Verify that the tutorial distinguishes user-invoked Skills from supporting disciplines.
 - Verify that setup is explained as repository convention configuration, not Skill installation.
@@ -191,7 +212,11 @@ The series should cover every locally installed, currently effective Matt Pocock
 - Installing or modifying Matt Pocock Skills.
 - Changing the local issue tracker configuration.
 - Writing a new custom Skill.
-- Building the rendered HTML release package in this spec pass. This spec may describe the release approach, but implementation can be split into later tickets.
+- Uploading generated HTML to GitHub Release.
+- Adding GitHub Actions automation for HTML export.
+- Publishing the tutorial through GitHub Pages or another hosted documentation site.
+- Introducing a full documentation framework such as VitePress, MkDocs, or Docusaurus.
+- Automatically generating PDF output.
 - Exhaustively reproducing Matt Pocock's videos.
 - Providing a complete reference manual for every line of every `SKILL.md`.
 - Maintaining a second editable truth in generated HTML.

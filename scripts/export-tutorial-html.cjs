@@ -1,0 +1,296 @@
+const fs = require("node:fs/promises");
+const path = require("node:path");
+
+const DEFAULT_SOURCE_DIR = path.join(
+  process.cwd(),
+  "docs",
+  "tutorials",
+  "matt-pocock-skills",
+);
+const DEFAULT_OUTPUT_DIR = path.join(
+  process.cwd(),
+  "dist",
+  "matt-pocock-skills-html",
+);
+
+function escapeHtml(value) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function slugify(value) {
+  return value
+    .toLowerCase()
+    .replace(/<[^>]+>/g, "")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/[^\p{Letter}\p{Number}\s-]/gu, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+function markdownFileToHtmlFile(fileName) {
+  return fileName.toLowerCase() === "readme.md"
+    ? "index.html"
+    : fileName.replace(/\.md$/i, ".html");
+}
+
+function rewriteMarkdownLinks(markdown) {
+  return markdown.replace(
+    /(\[[^\]]+\]\()((?![a-z][a-z0-9+.-]*:|#)([^)\s#]+\.md))(#[^)]+)?(\))/gi,
+    (_match, before, target, _file, anchor = "", after) =>
+      `${before}${markdownFileToHtmlFile(target)}${anchor}${after}`,
+  );
+}
+
+function renderInline(markdown) {
+  return escapeHtml(markdown)
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, text, href) => {
+      return `<a href="${escapeHtml(href)}">${text}</a>`;
+    });
+}
+
+function renderTable(rows) {
+  const renderedRows = rows.map((row, rowIndex) => {
+    const cells = row
+      .trim()
+      .replace(/^\||\|$/g, "")
+      .split("|")
+      .map((cell) => cell.trim());
+    const tag = rowIndex === 0 ? "th" : "td";
+    return `<tr>${cells.map((cell) => `<${tag}>${renderInline(cell)}</${tag}>`).join("")}</tr>`;
+  });
+
+  return `<table>\n${renderedRows.join("\n")}\n</table>`;
+}
+
+function renderMarkdown(markdown) {
+  const lines = rewriteMarkdownLinks(markdown).split(/\r?\n/);
+  const html = [];
+  let paragraph = [];
+  let list = [];
+  let table = [];
+  let inCodeFence = false;
+  let codeFenceLanguage = "";
+  let codeLines = [];
+
+  const flushParagraph = () => {
+    if (paragraph.length === 0) return;
+    html.push(`<p>${renderInline(paragraph.join(" "))}</p>`);
+    paragraph = [];
+  };
+  const flushList = () => {
+    if (list.length === 0) return;
+    html.push(`<ul>\n${list.map((item) => `<li>${renderInline(item)}</li>`).join("\n")}\n</ul>`);
+    list = [];
+  };
+  const flushTable = () => {
+    if (table.length === 0) return;
+    html.push(renderTable(table));
+    table = [];
+  };
+  const flushBlocks = () => {
+    flushParagraph();
+    flushList();
+    flushTable();
+  };
+
+  for (const line of lines) {
+    const codeFence = line.match(/^```(\S*)/);
+    if (codeFence) {
+      if (inCodeFence) {
+        html.push(
+          `<pre><code${codeFenceLanguage ? ` class="language-${escapeHtml(codeFenceLanguage)}"` : ""}>${escapeHtml(codeLines.join("\n"))}</code></pre>`,
+        );
+        inCodeFence = false;
+        codeFenceLanguage = "";
+        codeLines = [];
+      } else {
+        flushBlocks();
+        inCodeFence = true;
+        codeFenceLanguage = codeFence[1] || "";
+      }
+      continue;
+    }
+
+    if (inCodeFence) {
+      codeLines.push(line);
+      continue;
+    }
+
+    const rawAnchor = line.match(/^<a\s+id="([^"]+)"><\/a>\s*$/i);
+    if (rawAnchor) {
+      flushBlocks();
+      html.push(`<span id="${escapeHtml(rawAnchor[1])}"></span>`);
+      continue;
+    }
+
+    if (!line.trim()) {
+      flushBlocks();
+      continue;
+    }
+
+    const heading = line.match(/^(#{1,6})\s+(.+)$/);
+    if (heading) {
+      flushBlocks();
+      const level = heading[1].length;
+      const text = heading[2].trim();
+      const id = slugify(text);
+      html.push(`<h${level} id="${escapeHtml(id)}">${renderInline(text)}</h${level}>`);
+      continue;
+    }
+
+    const listItem = line.match(/^\s*[-*]\s+(.+)$/);
+    if (listItem) {
+      flushParagraph();
+      flushTable();
+      list.push(listItem[1]);
+      continue;
+    }
+
+    if (/^\s*\|.+\|\s*$/.test(line) && !/^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(line)) {
+      flushParagraph();
+      flushList();
+      table.push(line);
+      continue;
+    }
+
+    flushList();
+    flushTable();
+    paragraph.push(line.trim());
+  }
+
+  flushBlocks();
+  return html.join("\n");
+}
+
+function pageHtml({ title, body }) {
+  return `<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${escapeHtml(title)}</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+${body}
+  </main>
+</body>
+</html>
+`;
+}
+
+async function exportTutorialHtml({
+  sourceDir = DEFAULT_SOURCE_DIR,
+  outputDir = DEFAULT_OUTPUT_DIR,
+} = {}) {
+  const entries = await fs.readdir(sourceDir, { withFileTypes: true });
+  const markdownFiles = entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
+    .map((entry) => entry.name)
+    .sort((a, b) => {
+      if (a.toLowerCase() === "readme.md") return -1;
+      if (b.toLowerCase() === "readme.md") return 1;
+      return a.localeCompare(b);
+    });
+
+  await fs.rm(outputDir, { recursive: true, force: true });
+  await fs.mkdir(outputDir, { recursive: true });
+
+  for (const fileName of markdownFiles) {
+    const markdown = await fs.readFile(path.join(sourceDir, fileName), "utf8");
+    const title = markdown.match(/^#\s+(.+)$/m)?.[1]?.trim() ?? fileName;
+    const html = pageHtml({ title, body: renderMarkdown(markdown) });
+    await fs.writeFile(
+      path.join(outputDir, markdownFileToHtmlFile(fileName)),
+      html,
+      "utf8",
+    );
+  }
+
+  await fs.writeFile(path.join(outputDir, "styles.css"), stylesheet(), "utf8");
+  return { outputDir, files: markdownFiles.map(markdownFileToHtmlFile) };
+}
+
+function stylesheet() {
+  return `:root {
+  color-scheme: light;
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.65;
+  color: #232323;
+  background: #f7f7f4;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  box-sizing: border-box;
+  width: min(920px, 100%);
+  margin: 0 auto;
+  padding: 40px 24px 72px;
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+a {
+  color: #0f5e8c;
+}
+
+pre {
+  overflow-x: auto;
+  padding: 16px;
+  background: #202124;
+  color: #f4f4f4;
+}
+
+code {
+  font-family: Consolas, "SFMono-Regular", monospace;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+th,
+td {
+  border: 1px solid #d8d8d2;
+  padding: 8px 10px;
+  vertical-align: top;
+}
+
+blockquote {
+  margin-left: 0;
+  padding-left: 16px;
+  border-left: 4px solid #d8d8d2;
+  color: #555;
+}
+`;
+}
+
+if (require.main === module) {
+  exportTutorialHtml()
+    .then(({ outputDir, files }) => {
+      console.log(`Exported ${files.length} tutorial pages to ${outputDir}`);
+      console.log(`Open ${path.join(outputDir, "index.html")} in a browser.`);
+    })
+    .catch((error) => {
+      console.error(error);
+      process.exitCode = 1;
+    });
+}
+
+module.exports = {
+  exportTutorialHtml,
+  rewriteMarkdownLinks,
+  renderMarkdown,
+};
