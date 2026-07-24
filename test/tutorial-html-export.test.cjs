@@ -6,6 +6,7 @@ const test = require("node:test");
 const { pathToFileURL } = require("node:url");
 
 const {
+  exportAllTutorialsHtml,
   exportTutorialHtml,
   rewriteMarkdownLinks,
 } = require("../scripts/export-tutorial-html.cjs");
@@ -136,6 +137,114 @@ test("claude code basic manual has a documented offline HTML export", async () =
   );
   assert.match(firstRun, /href="\.\.\/claude-code-cli\/README\.md"/);
   assert.doesNotMatch(firstRun, /href="\.\.\/claude-code-cli\/README\.html"/);
+});
+
+test("exports all tutorial directories using root README order and publishable pages only", async () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "all-tutorial-html-export-"));
+  const tutorialsRoot = path.join(tmp, "docs", "tutorials");
+  const outputDir = path.join(tmp, "dist", "tutorials-html");
+  fs.mkdirSync(path.join(tutorialsRoot, "second-tutorial"), { recursive: true });
+  fs.mkdirSync(path.join(tutorialsRoot, "first-tutorial"), { recursive: true });
+  fs.mkdirSync(path.join(tutorialsRoot, "future-tutorial"), { recursive: true });
+
+  fs.writeFileSync(
+    path.join(tmp, "README.md"),
+    [
+      "# Tutorial",
+      "",
+      "## First Tutorial",
+      "",
+      "- [教程首页](docs/tutorials/first-tutorial/README.md)",
+      "",
+      "## Second Tutorial",
+      "",
+      "- [教程首页](docs/tutorials/second-tutorial/README.md)",
+      "",
+    ].join("\n"),
+  );
+
+  fs.writeFileSync(
+    path.join(tutorialsRoot, "first-tutorial", "README.md"),
+    "# Internal First Title\n\n- [Start](01-start.md)\n",
+  );
+  fs.writeFileSync(
+    path.join(tutorialsRoot, "first-tutorial", "01-start.md"),
+    "# Start\n",
+  );
+  fs.writeFileSync(
+    path.join(tutorialsRoot, "first-tutorial", "research-notes.md"),
+    "# Private Notes\n",
+  );
+  fs.writeFileSync(
+    path.join(tutorialsRoot, "first-tutorial", "writing-decisions.md"),
+    "# Writing Decisions\n",
+  );
+
+  fs.writeFileSync(
+    path.join(tutorialsRoot, "second-tutorial", "README.md"),
+    "# Second Tutorial\n\n- [Setup](01-setup.md)\n",
+  );
+  fs.writeFileSync(
+    path.join(tutorialsRoot, "second-tutorial", "01-setup.md"),
+    "# Setup\n",
+  );
+
+  fs.writeFileSync(
+    path.join(tutorialsRoot, "future-tutorial", "README.md"),
+    "# Future Tutorial\n",
+  );
+  fs.writeFileSync(
+    path.join(tutorialsRoot, "future-tutorial", "01-future.md"),
+    "# Future\n",
+  );
+
+  const result = await exportAllTutorialsHtml({
+    repoRoot: tmp,
+    tutorialsRoot,
+    outputDir,
+  });
+
+  assert.deepEqual(
+    result.tutorials.map((tutorial) => tutorial.slug),
+    ["first-tutorial", "second-tutorial", "future-tutorial"],
+  );
+
+  const home = fs.readFileSync(path.join(outputDir, "index.html"), "utf8");
+  assert.ok(
+    home.indexOf("First Tutorial") < home.indexOf("Second Tutorial"),
+    "root README order should be preserved",
+  );
+  assert.doesNotMatch(home, /Internal First Title/);
+  assert.ok(
+    home.indexOf("Second Tutorial") < home.indexOf("Future Tutorial"),
+    "unlisted tutorial directories should be appended",
+  );
+  assert.match(home, /href="first-tutorial\/index\.html"/);
+  assert.match(home, /href="second-tutorial\/index\.html"/);
+  assert.match(home, /href="future-tutorial\/index\.html"/);
+
+  assert.ok(fs.existsSync(path.join(outputDir, "first-tutorial", "index.html")));
+  assert.ok(fs.existsSync(path.join(outputDir, "first-tutorial", "01-start.html")));
+  assert.equal(
+    fs.existsSync(path.join(outputDir, "first-tutorial", "research-notes.html")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(outputDir, "first-tutorial", "writing-decisions.html")),
+    false,
+  );
+});
+
+test("package scripts expose the all-tutorial HTML export command", () => {
+  const repoRoot = path.resolve(__dirname, "..");
+  const packageJson = JSON.parse(
+    fs.readFileSync(path.join(repoRoot, "package.json"), "utf8"),
+  );
+
+  assert.equal(
+    packageJson.scripts["export:all-tutorials-html"],
+    "node scripts/export-all-tutorials-html.cjs",
+  );
 });
 
 test("post-commit reminder only triggers for tutorial Markdown changes", () => {

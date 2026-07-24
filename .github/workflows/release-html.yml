@@ -1,0 +1,43 @@
+name: Build tutorials HTML release package
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Test
+        run: npm test
+
+      - name: Build all tutorials HTML
+        run: npm run export:all-tutorials-html
+
+      - name: Package tutorials HTML
+        run: |
+          cd dist
+          zip -r tutorials-html.zip tutorials-html
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: dist/tutorials-html.zip
+          generate_release_notes: true

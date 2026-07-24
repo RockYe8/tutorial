@@ -3,5 +3,9 @@ references/
 .scratch/
 CONTEXT.md
 docs/research/
+docs/tutorials/**/research-*.md
+docs/tutorials/**/writing-decisions.md
+docs/tutorials/**/draft-*.md
+docs/tutorials/**/local-*.md
 docs/tutorials/claude-code-basic-manual/writing-decisions.md
 docs/tutorials/matt-pocock-skills/local-html-export.md

@@ -33,7 +33,15 @@
 ## 维护命令
 
 - `npm test`
+- `npm run export:all-tutorials-html`
 - `npm run export:tutorial-html`
 - `npm run export:claude-code-html`
 - `npm run export:claude-code-basic-manual-html`
 - `npm run install:tutorial-html-reminder`
+
+## 发布规则
+
+- GitHub Pages：push 到 `master` 后自动生成所有教程 HTML，并部署 `dist/tutorials-html`。
+- GitHub Release：push `v*.*.*` tag 后自动生成 `tutorials-html.zip` 并上传到 Release。
+- 新增教程：在 `docs/tutorials/<tutorial-slug>/` 下放置 `README.md` 和 `01-*.md`、`02-*.md` 等编号章节；根 `README.md` 中的出现顺序决定发布首页排序。
+- 非发布写作材料：`research-*.md`、`writing-decisions.md`、`draft-*.md`、`local-*.md` 不进入 HTML 发布，也不提交到仓库。

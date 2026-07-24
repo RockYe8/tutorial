@@ -41,6 +41,10 @@ function isManualPage(fileName) {
   return fileName.toLowerCase() === "readme.md" || /^\d{2}-.+\.md$/i.test(fileName);
 }
 
+function isPublishableTutorialPage(fileName) {
+  return isManualPage(fileName);
+}
+
 function rewriteMarkdownLinks(markdown, { exportedMarkdownFiles } = {}) {
   const exportedFiles = exportedMarkdownFiles
     ? new Set([...exportedMarkdownFiles].map((fileName) => fileName.toLowerCase()))
@@ -244,6 +248,138 @@ async function exportTutorialHtml({
   return { outputDir, files: markdownFiles.map(markdownFileToHtmlFile) };
 }
 
+async function readMarkdownTitle(filePath, fallback) {
+  const markdown = await fs.readFile(filePath, "utf8");
+  return markdown.match(/^#\s+(.+)$/m)?.[1]?.trim() ?? fallback;
+}
+
+function tutorialSlugsFromRootReadme(readme) {
+  return tutorialEntriesFromRootReadme(readme).map((entry) => entry.slug);
+}
+
+function tutorialEntriesFromRootReadme(readme) {
+  const slugs = [];
+  const seen = new Set();
+  let currentHeading = "";
+
+  for (const line of readme.split(/\r?\n/)) {
+    const heading = line.match(/^##\s+(.+)$/);
+    if (heading) {
+      currentHeading = heading[1].trim();
+      continue;
+    }
+
+    const link = line.match(/\]\(docs\/tutorials\/([^/)]+)\/README\.md(?:#[^)]+)?\)/i);
+    if (link) {
+      const slug = link[1];
+      if (!seen.has(slug)) {
+        seen.add(slug);
+        slugs.push({ slug, title: currentHeading || slug });
+      }
+    }
+  }
+
+  return slugs;
+}
+
+async function tutorialDirectories(tutorialsRoot) {
+  const entries = await fs.readdir(tutorialsRoot, { withFileTypes: true });
+  return entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort((a, b) => a.localeCompare(b));
+}
+
+async function publishablePagesForTutorial(tutorialDir) {
+  const entries = await fs.readdir(tutorialDir, { withFileTypes: true });
+  const markdownFiles = entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
+    .map((entry) => entry.name)
+    .filter(isPublishableTutorialPage)
+    .sort((a, b) => {
+      if (a.toLowerCase() === "readme.md") return -1;
+      if (b.toLowerCase() === "readme.md") return 1;
+      return a.localeCompare(b);
+    });
+
+  const pages = [];
+  for (const fileName of markdownFiles) {
+    pages.push({
+      markdownFile: fileName,
+      htmlFile: markdownFileToHtmlFile(fileName),
+      title: await readMarkdownTitle(path.join(tutorialDir, fileName), fileName),
+    });
+  }
+
+  return pages;
+}
+
+async function exportAllTutorialsHtml({
+  repoRoot = process.cwd(),
+  tutorialsRoot = path.join(repoRoot, "docs", "tutorials"),
+  outputDir = path.join(repoRoot, "dist", "tutorials-html"),
+} = {}) {
+  const rootReadmePath = path.join(repoRoot, "README.md");
+  const rootReadme = await fs.readFile(rootReadmePath, "utf8").catch(() => "");
+  const readmeEntries = tutorialEntriesFromRootReadme(rootReadme);
+  const readmeOrder = readmeEntries.map((entry) => entry.slug);
+  const readmeTitlesBySlug = new Map(
+    readmeEntries.map((entry) => [entry.slug, entry.title]),
+  );
+  const directorySlugs = await tutorialDirectories(tutorialsRoot);
+  const directorySet = new Set(directorySlugs);
+  const orderedSlugs = [
+    ...readmeOrder.filter((slug) => directorySet.has(slug)),
+    ...directorySlugs.filter((slug) => !readmeOrder.includes(slug)),
+  ];
+
+  await fs.rm(outputDir, { recursive: true, force: true });
+  await fs.mkdir(outputDir, { recursive: true });
+
+  const tutorials = [];
+  for (const slug of orderedSlugs) {
+    const sourceDir = path.join(tutorialsRoot, slug);
+    const tutorialOutputDir = path.join(outputDir, slug);
+    const pages = await publishablePagesForTutorial(sourceDir);
+    if (pages.length === 0) continue;
+
+    await exportTutorialHtml({
+      sourceDir,
+      outputDir: tutorialOutputDir,
+      manualPagesOnly: true,
+    });
+
+    tutorials.push({
+      slug,
+      title: readmeTitlesBySlug.get(slug) ?? pages[0].title,
+      pages,
+    });
+  }
+
+  const body = [
+    '<h1 id="tutorial">Tutorial</h1>',
+    ...tutorials.flatMap((tutorial) => [
+      `<h2 id="${escapeHtml(slugify(tutorial.title))}">${renderInline(tutorial.title)}</h2>`,
+      "<ul>",
+      ...tutorial.pages.map((page) => {
+        const label =
+          page.htmlFile === "index.html" ? "教程首页" : page.title;
+        return `<li><a href="${escapeHtml(`${tutorial.slug}/${page.htmlFile}`)}">${renderInline(label)}</a></li>`;
+      }),
+      "</ul>",
+    ]),
+  ].join("\n");
+
+  await fs.writeFile(
+    path.join(outputDir, "index.html"),
+    pageHtml({ title: "Tutorial", body }),
+    "utf8",
+  );
+  await fs.writeFile(path.join(outputDir, "styles.css"), stylesheet(), "utf8");
+
+  return { outputDir, tutorials };
+}
+
 function stylesheet() {
   return `:root {
   color-scheme: light;
@@ -332,8 +468,12 @@ if (require.main === module) {
 }
 
 module.exports = {
+  exportAllTutorialsHtml,
   exportTutorialHtml,
+  isPublishableTutorialPage,
   rewriteMarkdownLinks,
   renderMarkdown,
   isManualPage,
+  tutorialEntriesFromRootReadme,
+  tutorialSlugsFromRootReadme,
 };
