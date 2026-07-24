@@ -1,5 +1,7 @@
 # 08 - Skills 与可复用工作流
 
+[上一章：Planning mode 与任务拆分](07-planning-and-task-splitting.md) | [返回目录](README.md) | [下一章：MCP、subagents、hooks 等进阶工具边界](09-advanced-tooling-mcp-subagents-hooks.md)
+
 上一章讲的是 planning mode、spec 和 tickets：当任务变大时，先把共识和执行单元整理清楚。
 
 这一章继续往后走一步：如果某类任务反复出现，比如代码审查、发布检查、研究总结、迁移步骤、PR 描述、教程写作验证，你不应该每次都复制一段越来越长的 prompt。更好的做法，是把它沉淀成 skill 或 slash command，让 Claude Code 在需要时加载一套 focused, repeatable workflow。

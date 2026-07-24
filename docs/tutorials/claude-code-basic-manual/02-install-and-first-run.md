@@ -1,5 +1,7 @@
 # 02 - 安装与第一次启动
 
+[上一章：什么是 Claude Code](01-what-is-claude-code.md) | [返回目录](README.md) | [下一章：让 Claude Code 先读懂真实项目](03-read-a-real-project.md)
+
 上一章建立了一个基础心智模型：Claude Code 不是普通聊天，也不是 IDE 补全，而是能进入项目现场读取仓库、修改文件、运行命令并回收反馈的 agentic coding tool。
 
 这一章回答更具体的问题：已经准备使用 Claude Code 时，你应该从哪个入口开始？第一次启动时，怎样理解工作目录、工具调用和权限提示？如果你还没安装好 Claude Code，本章不会重写安装步骤，而是把你指向仓库里已有的安装教程。

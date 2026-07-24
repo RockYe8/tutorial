@@ -1,5 +1,7 @@
 # 07 - Planning mode 与任务拆分
 
+[上一章：上下文、memory 与 CLAUDE.md](06-context-memory-and-claude-md.md) | [返回目录](README.md) | [下一章：Skills 与可复用工作流](08-skills-and-repeatable-workflows.md)
+
 上一章讲的是上下文管理：让 Claude Code 在正确的项目事实、规则和当前任务状态里工作。
 
 这一章讲任务进入执行前的收束。很多使用 Claude Code 的失败，不是模型不会写代码，而是你把一个还没被定义清楚、风险还没暴露、上下文也装不下的任务直接推给了它。结果看起来很忙，diff 很大，最后却很难 review。

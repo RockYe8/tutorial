@@ -1,5 +1,7 @@
 # 09 - MCP、subagents、hooks 等进阶工具边界
 
+[上一章：Skills 与可复用工作流](08-skills-and-repeatable-workflows.md) | [返回目录](README.md) | [下一章：团队工作流、CI 与 review](10-team-workflow-ci-and-review.md)
+
 前面几章已经走过了单次开发任务的主线：让 Claude Code 进入项目、管理上下文、拆清任务、完成小步修改、验证结果，并把重复流程沉淀成 skill。
 
 这一章进入进阶工具，但重点不是把每个工具讲成教程。基础读者更需要先建立判断边界：什么时候应该接外部系统，什么时候应该隔离上下文，什么时候需要确定性的安全控制。

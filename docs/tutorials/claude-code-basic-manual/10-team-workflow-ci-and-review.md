@@ -1,5 +1,7 @@
 # 10 - 团队工作流、CI 与 review
 
+[上一章：MCP、subagents、hooks 等进阶工具边界](09-advanced-tooling-mcp-subagents-hooks.md) | [返回目录](README.md) | [下一章：反模式、模板与检查清单](11-anti-patterns-and-checklists.md)
+
 前面几章讲的是个人如何把 Claude Code 用进真实开发任务：读项目、管理上下文、规划、修改、验证，再把重复流程沉淀成 skill。
 
 这一章把视角再往外推一步：当 Claude Code 不只服务一个人，而是进入团队、PR/MR 审查和 CI 场景时，真正重要的不是“让它更自动”，而是让它在共享规则、最小权限和人工 review 的边界内工作。
