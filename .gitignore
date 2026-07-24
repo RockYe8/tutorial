@@ -1,7 +1,7 @@
-dist/matt-pocock-skills-html/
-dist/claude-code-basic-manual-html/
+dist/
 references/
 .scratch/
 CONTEXT.md
 docs/research/
 docs/tutorials/claude-code-basic-manual/writing-decisions.md
+docs/tutorials/matt-pocock-skills/local-html-export.md
