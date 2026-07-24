@@ -152,7 +152,11 @@ function renderMarkdown(markdown) {
       continue;
     }
 
-    if (/^\s*\|.+\|\s*$/.test(line) && !/^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(line)) {
+    if (/^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(line)) {
+      continue;
+    }
+
+    if (/^\s*\|.+\|\s*$/.test(line)) {
       flushParagraph();
       flushList();
       table.push(line);
@@ -278,7 +282,21 @@ blockquote {
 }
 
 if (require.main === module) {
-  exportTutorialHtml()
+  const args = process.argv.slice(2);
+  const options = {};
+
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index];
+    if (arg === "--source-dir") {
+      options.sourceDir = path.resolve(args[index + 1]);
+      index += 1;
+    } else if (arg === "--output-dir") {
+      options.outputDir = path.resolve(args[index + 1]);
+      index += 1;
+    }
+  }
+
+  exportTutorialHtml(options)
     .then(({ outputDir, files }) => {
       console.log(`Exported ${files.length} tutorial pages to ${outputDir}`);
       console.log(`Open ${path.join(outputDir, "index.html")} in a browser.`);

@@ -33,7 +33,7 @@ test("exports tutorial Markdown as filesystem-openable HTML pages", async () => 
 
   fs.writeFileSync(
     path.join(sourceDir, "README.md"),
-    "# Tutorial Home\n\nGo to [Basics](01-basics.md#start).\n",
+    "# Tutorial Home\n\nGo to [Basics](01-basics.md#start).\n\n| Item | Next |\n| --- | --- |\n| One | Two |\n",
   );
   fs.writeFileSync(
     path.join(sourceDir, "01-basics.md"),
@@ -48,6 +48,8 @@ test("exports tutorial Markdown as filesystem-openable HTML pages", async () => 
   assert.match(index, /<!doctype html>/i);
   assert.match(index, /href="01-basics\.html#start"/);
   assert.match(index, /<h1 id="tutorial-home">Tutorial Home<\/h1>/);
+  assert.match(index, /<tr><th>Item<\/th><th>Next<\/th><\/tr>/);
+  assert.doesNotMatch(index, /\| --- \| --- \|/);
   assert.match(basics, /href="index\.html"/);
   assert.doesNotMatch(index, /href="01-basics\.md/);
 });
@@ -62,7 +64,13 @@ test("post-commit reminder only triggers for tutorial Markdown changes", () => {
   );
   assert.equal(
     shouldRemindForChangedFiles([
-      "docs/tutorials/other/README.md",
+      "docs/tutorials/claude-code-cli/README.md",
+    ]),
+    true,
+  );
+  assert.equal(
+    shouldRemindForChangedFiles([
+      "docs/tutorials/README.md",
       "docs/tutorials/matt-pocock-skills/image.png",
     ]),
     false,

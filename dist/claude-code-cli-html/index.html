@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Claude Code CLI 安装与使用教程导航</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+<h1 id="claude-code-cli-安装与使用教程导航">Claude Code CLI 安装与使用教程导航</h1>
+<p>这是一份 Claude Code 入门教程，带你从安装、配置到第一次在项目中使用 Claude Code。</p>
+<p>这不是 Anthropic 官方中文翻译。安装方式、认证方式、环境变量和插件命令会随 Claude Code 版本变化；遇到差异时，请以 Claude Code 官方文档为准。如果你的组织提供 LLM Gateway 或专用配置，请同时遵循组织给出的配置说明。</p>
+<h2 id="学习路径">学习路径</h2>
+<p>1. <a href="01-install-and-verify.html">01 - 安装 Claude Code CLI：先把本机环境跑通</a></p>
+<p>适合从零开始。先安装终端和 Git，再优先用官方 PowerShell 脚本安装 Claude Code；如果网络、安全软件或系统策略拦截，再改用 WinGet。最后用 <code>claude --version</code> 和 <code>claude doctor</code> 判断本机环境是否健康。</p>
+<p>2. <a href="02-gateway-configuration.html">02 - 可选：接入 LLM Gateway 或组织提供的模型服务</a></p>
+<p>适合已经拿到组织网关账号、API Key 或专用配置的用户。重点讲清楚 <code>ANTHROPIC_BASE_URL</code>、<code>ANTHROPIC_AUTH_TOKEN</code>、模型名和 <code>settings.json</code> 的关系。没有这类网关配置的读者可以先跳过这一篇。</p>
+<p>3. <a href="03-daily-workflow-and-extensions.html">03 - 快速上手与增强能力：让 Claude Code 真正进入项目工作流</a></p>
+<p>适合完成安装后马上开始使用。包括进入项目目录、常用指令、终端建议、Superpowers、OpenSpec 和常见问题处理。</p>
+<h2 id="一句话路线">一句话路线</h2>
+<pre><code class="language-text">准备 Windows Terminal、Git
+  -&gt; 优先用官方 PowerShell 脚本安装 Claude Code
+  -&gt; 如果脚本被网络或系统策略拦截，改用 WinGet
+  -&gt; 用 claude --version 和 claude doctor 验证
+  -&gt; 按需安装 Node.js LTS
+  -&gt; 如果有组织网关配置，写入 C:\Users\&lt;你的用户名&gt;\.claude\settings.json
+  -&gt; 启动 claude
+  -&gt; 用 /status 确认当前认证和模型状态
+  -&gt; 进入项目目录开始使用</code></pre>
+<h2 id="什么时候看哪一篇">什么时候看哪一篇？</h2>
+<table>
+<tr><th>我现在的处境</th><th>下一步</th></tr>
+<tr><td>我还没有装 Claude Code</td><td>先看 <a href="01-install-and-verify.html">01 - 安装 Claude Code CLI</a></td></tr>
+<tr><td>我已经能运行 <code>claude --version</code>，并且拿到了组织网关配置</td><td>看 <a href="02-gateway-configuration.html">02 - 可选：接入 LLM Gateway</a></td></tr>
+<tr><td>我能进入 Claude Code，但不知道怎么开始项目</td><td>看 <a href="03-daily-workflow-and-extensions.html">03 - 快速上手与增强能力</a></td></tr>
+<tr><td><code>/status</code> 没显示预期的网关地址或模型</td><td>回到 <a href="02-gateway-configuration.html#check-status">02 - 检查配置是否生效</a></td></tr>
+<tr><td><code>npm -v</code> 在 PowerShell 里报脚本策略错误</td><td>看 <a href="01-install-and-verify.html#powershell-npm-policy">01 - PowerShell npm 脚本策略问题</a></td></tr>
+</table>
+<h2 id="本教程采用的口径">本教程采用的口径</h2>
+<ul>
+<li>Windows 用户优先使用 Claude Code 官方 PowerShell 安装脚本；WinGet 是网络、安全策略或脚本执行受限时的备用方案。</li>
+<li>npm 全局安装只作为旧环境兼容方案保留，不作为新手主流程。官方公开 README 已将 npm 安装标为 deprecated。</li>
+<li>看到“从 URL 下载脚本并执行”不要简单理解成非官方或不安全；这里的 <code>install.ps1</code> 是 Claude Code 官方 Windows 推荐安装入口。如果被代理、登录页或安全软件拦截，再切换 WinGet。</li>
+<li>Git for Windows 在原生 Windows 上推荐安装，因为它可以让 Claude Code 使用 Git Bash；如果没有 Git for Windows，Claude Code 会回退到 PowerShell。</li>
+<li>WSL 用户应在 WSL 发行版内部安装和启动 Claude Code，不需要额外安装 Git for Windows 来给 WSL 使用。</li>
+<li>Node.js LTS 不是官方原生安装 Claude Code 的前置条件；本教程仍建议安装它，是因为很多项目脚本、npm 工具和 OpenSpec 会用到。</li>
+<li>如果你的组织提供 LLM Gateway 配置，应优先复制组织后台生成的 Claude Code <code>settings.json</code>，不要手写猜测模型名和接口路径；这应被理解为“Gateway 提供 Claude Code 兼容接口”，不是“Claude Code 原生直连某个非 Anthropic 模型”。</li>
+<li>API Key 不应写进教程、截图或仓库；截图时必须打码。</li>
+</ul>
+<h2 id="参考来源">参考来源</h2>
+<ul>
+<li>Claude Code 官方 README：https://github.com/anthropics/claude-code</li>
+<li>Claude Code 官方安装文档：https://code.claude.com/docs/en/installation</li>
+<li>Claude Code LLM Gateway 文档：https://code.claude.com/docs/en/llm-gateway</li>
+<li>Claude Code 环境变量文档：https://code.claude.com/docs/en/env-vars</li>
+<li>Claude Code settings 文档：https://code.claude.com/docs/en/settings</li>
+<li>Claude Code 插件参考：https://code.claude.com/docs/en/plugins-reference</li>
+</ul>
+  </main>
+</body>
+</html>

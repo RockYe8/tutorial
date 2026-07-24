@@ -1,6 +1,6 @@
 const { execFileSync } = require("node:child_process");
 
-const TUTORIAL_MARKDOWN = /^docs\/tutorials\/matt-pocock-skills\/[^/]+\.md$/;
+const TUTORIAL_MARKDOWN = /^docs\/tutorials\/[^/]+\/[^/]+\.md$/;
 
 function normalizePath(filePath) {
   return filePath.replaceAll("\\", "/");
@@ -25,8 +25,8 @@ function runReminder() {
 
   console.log("");
   console.log("Tutorial Markdown changed in the last commit.");
-  console.log("Reminder: run `npm run export:tutorial-html` if you need a fresh local HTML export.");
-  console.log("Generated HTML stays local under dist/matt-pocock-skills-html/ and is not committed.");
+  console.log("Reminder: run the matching export script if you need a fresh local HTML export.");
+  console.log("Generated HTML stays local under dist/ and is not committed.");
 }
 
 if (require.main === module) {

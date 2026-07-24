@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>02 - 可选：接入 LLM Gateway 或组织提供的模型服务</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+<h1 id="02---可选接入-llm-gateway-或组织提供的模型服务">02 - 可选：接入 LLM Gateway 或组织提供的模型服务</h1>
+<p>这一篇假设你已经完成第一篇：本机能运行 <code>claude --version</code>。如果你使用官方 Claude 账号登录 Claude Code，可以先跳到第三篇。本篇只适用于一种情况：你的学校、团队或组织提供了 LLM Gateway、API Key 或 Claude Code 专用配置，需要把 Claude Code 指向这个网关。</p>
+<p>请把本篇里的地址、模型名和 key 都当成占位示例。真实配置以你的组织后台生成的 Claude Code 配置为准。不要猜接口地址、模型名或 key 格式。</p>
+<h2 id="为什么要用-gateway">为什么要用 Gateway</h2>
+<p>LLM Gateway 可以理解为 Claude Code 和模型服务之间的“中转站”。组织提供 Gateway 时，通常是为了：</p>
+<ul>
+<li>统一认证。</li>
+<li>统一模型路由。</li>
+<li>使用量统计。</li>
+<li>预算和限流。</li>
+<li>审计和合规。</li>
+<li>在不同模型或供应商之间做路由。</li>
+</ul>
+<p>Claude Code 官方文档也把 LLM Gateway 描述为 Claude Code 和模型服务之间的集中代理层。关键要求是：Gateway 必须能提供 Claude Code 所需的 Anthropic Messages 格式接口，而不是只提供 OpenAI <code>/v1/chat/completions</code>。</p>
+<p>如果组织后台显示 DeepSeek 或其他模型名，应理解为“Gateway 把 Claude Code 兼容请求路由到指定模型”。不要理解成“Claude Code 原生直连某个非 Anthropic 模型”，否则容易把客户端能力和网关能力混在一起。</p>
+<h2 id="生成-claude-code-专用-api-key">生成 Claude Code 专用 API Key</h2>
+<p>打开组织提供的网关后台，进入模型或 API Key 页面。常见步骤是：</p>
+<p>1. 使用你的组织账号登录。 2. 进入模型广场或模型列表。 3. 选择允许给 Claude Code 使用的模型。 4. 在生成 Key 时，工具类型选择 <code>Claude Code</code>。 5. 复制后台生成的 Claude Code <code>settings.json</code>。 6. 妥善保存 API Key，不要发到聊天、文档、截图或仓库。</p>
+<p>如果后台同时提供多种工具类型，一定要选 <code>Claude Code</code>。给普通 OpenAI SDK、curl 或其他工具使用的 key 配置，不一定能直接给 Claude Code 用。</p>
+<h2 id="理解-settingsjson">理解 settings.json</h2>
+<p>Claude Code 的用户级配置通常在：</p>
+<pre><code class="language-text">C:\Users\&lt;你的用户名&gt;\.claude\settings.json</code></pre>
+<p>在 PowerShell 中可以这样打开：</p>
+<pre><code class="language-powershell">New-Item -ItemType Directory -Force &quot;$env:USERPROFILE\.claude&quot; | Out-Null
+notepad &quot;$env:USERPROFILE\.claude\settings.json&quot;</code></pre>
+<p>组织后台复制出来的内容可能类似：</p>
+<pre><code class="language-json">{
+  &quot;env&quot;: {
+    &quot;ANTHROPIC_BASE_URL&quot;: &quot;https://gateway.example.com&quot;,
+    &quot;ANTHROPIC_AUTH_TOKEN&quot;: &quot;sk-你的key&quot;,
+    &quot;ANTHROPIC_MODEL&quot;: &quot;company-approved-model&quot;,
+    &quot;ANTHROPIC_DEFAULT_OPUS_MODEL&quot;: &quot;company-approved-model&quot;,
+    &quot;ANTHROPIC_DEFAULT_SONNET_MODEL&quot;: &quot;company-approved-model&quot;,
+    &quot;ANTHROPIC_DEFAULT_HAIKU_MODEL&quot;: &quot;company-approved-model&quot;,
+    &quot;CLAUDE_CODE_SUBAGENT_MODEL&quot;: &quot;company-approved-model&quot;
+  }
+}</code></pre>
+<p>这里最重要的是：</p>
+<table>
+<tr><th>配置项</th><th>用途</th></tr>
+<tr><td><code>ANTHROPIC_BASE_URL</code></td><td>把 Claude Code 请求发到 Gateway</td></tr>
+<tr><td><code>ANTHROPIC_AUTH_TOKEN</code></td><td>作为 Authorization bearer token 发给 Gateway</td></tr>
+<tr><td><code>ANTHROPIC_MODEL</code></td><td>默认模型名</td></tr>
+<tr><td><code>ANTHROPIC_DEFAULT_*_MODEL</code></td><td>给不同模型档位指定网关模型</td></tr>
+<tr><td><code>CLAUDE_CODE_SUBAGENT_MODEL</code></td><td>子任务或子代理使用的模型</td></tr>
+</table>
+<p>官方环境变量文档说明，<code>ANTHROPIC_BASE_URL</code> 用于覆盖 API endpoint，把请求路由到代理或网关；<code>ANTHROPIC_AUTH_TOKEN</code> 会作为 Authorization header 的 bearer token 使用。<code>settings.json</code> 的 <code>env</code> 字段可以让这些变量对每次 Claude Code 会话生效。</p>
+<h2 id="写入配置">写入配置</h2>
+<p>把组织后台复制出的 JSON 粘贴到：</p>
+<pre><code class="language-text">C:\Users\&lt;你的用户名&gt;\.claude\settings.json</code></pre>
+<p>保存后，完全退出 Claude Code，重新打开终端。环境变量通常在新会话启动时读取，旧窗口可能仍然拿不到新配置。</p>
+<h2 id="测试-gateway-接口">测试 Gateway 接口</h2>
+<p>如果 Gateway 提供 Anthropic Messages 兼容接口，可以先在 PowerShell 中测试：</p>
+<pre><code class="language-powershell">$settings = Get-Content &quot;$env:USERPROFILE\.claude\settings.json&quot; -Raw | ConvertFrom-Json
+$env:ANTHROPIC_BASE_URL = $settings.env.ANTHROPIC_BASE_URL
+$env:ANTHROPIC_AUTH_TOKEN = $settings.env.ANTHROPIC_AUTH_TOKEN
+$model = $settings.env.ANTHROPIC_MODEL
+
+Invoke-RestMethod -Method Post -Uri &quot;$env:ANTHROPIC_BASE_URL/v1/messages&quot; `
+  -Headers @{
+    &quot;Authorization&quot; = &quot;Bearer $env:ANTHROPIC_AUTH_TOKEN&quot;
+    &quot;anthropic-version&quot; = &quot;2023-06-01&quot;
+  } `
+  -ContentType &quot;application/json&quot; `
+  -Body (@{
+    model = $model
+    max_tokens = 8
+    messages = @(@{ role = &quot;user&quot;; content = &quot;ping&quot; })
+  } | ConvertTo-Json -Depth 5)</code></pre>
+<p>成功标准：返回 JSON，并且能看到 <code>id</code>、<code>content</code> 或 <code>model</code> 一类字段。</p>
+<p>如果返回 <code>401</code>，优先怀疑 key 复制错误、key 过期、工具类型选错，或前后多了空格。</p>
+<p>如果返回“模型不存在”，说明地址和认证可能已经通了，问题集中在模型名。回到网关后台复制最新 Claude Code 配置，不要猜模型名。</p>
+<span id="check-status"></span>
+<h2 id="启动-claude-code-并检查状态">启动 Claude Code 并检查状态</h2>
+<p>打开新的终端，进入项目目录：</p>
+<pre><code class="language-powershell">cd D:\你的项目目录
+claude</code></pre>
+<p>进入 Claude Code 后输入：</p>
+<pre><code class="language-text">/status</code></pre>
+<p>检查：</p>
+<ul>
+<li>能看到 Anthropic base URL 或类似字段。</li>
+<li>地址是你预期的 Gateway。</li>
+<li>认证方式显示已配置。</li>
+<li>当前模型是组织允许使用的模型，或能通过 <code>/model</code> 选择组织允许使用的模型。</li>
+</ul>
+<p>然后发送一句简单测试：</p>
+<pre><code class="language-text">请用一句话回复：Claude Code 网关连接成功。</code></pre>
+<p>如果能正常回复，就可以进入第三篇开始项目工作流。</p>
+<h2 id="不想把-key-明文写入-settingsjson">不想把 key 明文写入 settings.json</h2>
+<p>如果你不想把 key 写进配置文件，可以只在当前 PowerShell 会话里临时设置：</p>
+<pre><code class="language-powershell">$env:ANTHROPIC_BASE_URL = &quot;https://gateway.example.com&quot;
+$env:ANTHROPIC_AUTH_TOKEN = &quot;sk-你的key&quot;
+$env:ANTHROPIC_MODEL = &quot;company-approved-model&quot;
+claude</code></pre>
+<p>缺点是每次打开新终端都要重新设置。如果你在组织环境中使用 Claude Code，请优先遵循组织后台和安全规范。</p>
+<h2 id="常见问题">常见问题</h2>
+<h3 id="只支持-openai-格式的网关能不能直接用">只支持 OpenAI 格式的网关能不能直接用？</h3>
+<p>不能只靠 OpenAI <code>/v1/chat/completions</code> 就让 Claude Code 稳定工作。Gateway 需要提供 Anthropic Messages 格式接口，或提供明确的 Claude Code 兼容配置。</p>
+<h3 id="status-没有显示-gateway-地址"><code>/status</code> 没有显示 Gateway 地址</h3>
+<p>检查：</p>
+<pre><code class="language-powershell">notepad &quot;$env:USERPROFILE\.claude\settings.json&quot;</code></pre>
+<p>确认 JSON 合法，并且 <code>env</code> 里存在 <code>ANTHROPIC_BASE_URL</code>。保存后完全退出 Claude Code，再重新打开。</p>
+<h3 id="401-unauthorized">401 Unauthorized</h3>
+<p>处理顺序：</p>
+<p>1. 回到网关后台重新复制 Claude Code 配置。 2. 确认工具类型是 <code>Claude Code</code>。 3. 确认 <code>ANTHROPIC_AUTH_TOKEN</code> 没有前后空格。 4. 确认 key 没有过期或被禁用。 5. 重新打开终端和 Claude Code。</p>
+<h3 id="连接超时">连接超时</h3>
+<p>先确认当前网络和 Gateway 地址可访问。如果组织要求代理，请按组织网络说明配置代理；不要随意使用个人代理转发源码或密钥。</p>
+<h2 id="本篇总校验">本篇总校验</h2>
+<p>完成本篇后，你应该能确认：</p>
+<ul>
+<li><code>settings.json</code> 已保存到正确位置。</li>
+<li><code>ANTHROPIC_BASE_URL</code> 指向预期 Gateway。</li>
+<li><code>ANTHROPIC_AUTH_TOKEN</code> 使用自己的 key。</li>
+<li>模型名来自网关后台，而不是手写猜测。</li>
+<li><code>/v1/messages</code> 测试能返回 JSON，或者 Claude Code 能正常回复。</li>
+<li><code>/status</code> 能看到 Gateway 地址。</li>
+</ul>
+<h2 id="参考来源">参考来源</h2>
+<ul>
+<li>Claude Code LLM Gateway 文档：https://code.claude.com/docs/en/llm-gateway</li>
+<li>Claude Code 环境变量文档：https://code.claude.com/docs/en/env-vars</li>
+<li>Claude Code settings 文档：https://code.claude.com/docs/en/settings</li>
+</ul>
+  </main>
+</body>
+</html>
