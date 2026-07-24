@@ -69,7 +69,9 @@
 
 Markdown 是本教程唯一手工维护的 source of truth。后续生成的 HTML 包只是从当前 Markdown 导出的 release / offline artifact，不应手工编辑 HTML 后再反向同步。
 
-在线阅读时，可以使用仓库 Web UI。离线分发时，后续 HTML 包应以 `index.html` 作为入口，并把章节间链接从 `.md` 重写为 `.html`；读者打开本地文件即可阅读，不应要求启动本地服务器。PDF 或 Word 可以作为未来扩展，但不是第一优先级。
+在线阅读时，可以使用仓库 Web UI。离线分发时，运行 `npm run export:claude-code-basic-manual-html` 会从当前 Markdown 生成 `dist/claude-code-basic-manual-html/`，导出范围是 README 和编号章节。其中 `index.html` 是入口页，章节间链接会从 `.md` 重写为 `.html` 并尽量保留锚点。读者直接打开本地 `index.html` 即可阅读，不需要启动本地服务器。
+
+HTML 包是生成物，默认不作为手工维护源；如果发现内容问题，应修改 Markdown 后重新导出。PDF 或 Word 可以作为未来扩展，但不是第一优先级。
 
 ## 给后续章节作者的写作约束
 

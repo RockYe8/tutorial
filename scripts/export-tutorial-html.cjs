@@ -37,11 +37,28 @@ function markdownFileToHtmlFile(fileName) {
     : fileName.replace(/\.md$/i, ".html");
 }
 
-function rewriteMarkdownLinks(markdown) {
+function isManualPage(fileName) {
+  return fileName.toLowerCase() === "readme.md" || /^\d{2}-.+\.md$/i.test(fileName);
+}
+
+function rewriteMarkdownLinks(markdown, { exportedMarkdownFiles } = {}) {
+  const exportedFiles = exportedMarkdownFiles
+    ? new Set([...exportedMarkdownFiles].map((fileName) => fileName.toLowerCase()))
+    : null;
+
   return markdown.replace(
     /(\[[^\]]+\]\()((?![a-z][a-z0-9+.-]*:|#)([^)\s#]+\.md))(#[^)]+)?(\))/gi,
-    (_match, before, target, _file, anchor = "", after) =>
-      `${before}${markdownFileToHtmlFile(target)}${anchor}${after}`,
+    (_match, before, target, file, anchor = "", after) => {
+      const isSameFolderLink = !/[\\/]/.test(file);
+      const isExportedFile =
+        !exportedFiles || exportedFiles.has(file.toLowerCase());
+
+      if (!isSameFolderLink || !isExportedFile) {
+        return `${before}${target}${anchor}${after}`;
+      }
+
+      return `${before}${markdownFileToHtmlFile(target)}${anchor}${after}`;
+    },
   );
 }
 
@@ -68,8 +85,8 @@ function renderTable(rows) {
   return `<table>\n${renderedRows.join("\n")}\n</table>`;
 }
 
-function renderMarkdown(markdown) {
-  const lines = rewriteMarkdownLinks(markdown).split(/\r?\n/);
+function renderMarkdown(markdown, options = {}) {
+  const lines = rewriteMarkdownLinks(markdown, options).split(/\r?\n/);
   const html = [];
   let paragraph = [];
   let list = [];
@@ -193,11 +210,13 @@ ${body}
 async function exportTutorialHtml({
   sourceDir = DEFAULT_SOURCE_DIR,
   outputDir = DEFAULT_OUTPUT_DIR,
+  manualPagesOnly = false,
 } = {}) {
   const entries = await fs.readdir(sourceDir, { withFileTypes: true });
   const markdownFiles = entries
     .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
     .map((entry) => entry.name)
+    .filter((fileName) => !manualPagesOnly || isManualPage(fileName))
     .sort((a, b) => {
       if (a.toLowerCase() === "readme.md") return -1;
       if (b.toLowerCase() === "readme.md") return 1;
@@ -210,7 +229,10 @@ async function exportTutorialHtml({
   for (const fileName of markdownFiles) {
     const markdown = await fs.readFile(path.join(sourceDir, fileName), "utf8");
     const title = markdown.match(/^#\s+(.+)$/m)?.[1]?.trim() ?? fileName;
-    const html = pageHtml({ title, body: renderMarkdown(markdown) });
+    const html = pageHtml({
+      title,
+      body: renderMarkdown(markdown, { exportedMarkdownFiles: markdownFiles }),
+    });
     await fs.writeFile(
       path.join(outputDir, markdownFileToHtmlFile(fileName)),
       html,
@@ -293,6 +315,8 @@ if (require.main === module) {
     } else if (arg === "--output-dir") {
       options.outputDir = path.resolve(args[index + 1]);
       index += 1;
+    } else if (arg === "--manual-pages-only") {
+      options.manualPagesOnly = true;
     }
   }
 
@@ -311,4 +335,5 @@ module.exports = {
   exportTutorialHtml,
   rewriteMarkdownLinks,
   renderMarkdown,
+  isManualPage,
 };

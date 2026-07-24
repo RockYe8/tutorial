@@ -3,6 +3,7 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const test = require("node:test");
+const { pathToFileURL } = require("node:url");
 
 const {
   exportTutorialHtml,
@@ -17,11 +18,11 @@ const {
 
 test("rewrites tutorial-relative Markdown links to generated HTML links", () => {
   const markdown =
-    "[Intro](01-codex-skills-basics.md#before-you-start) and [README](README.md) and [external](https://example.com/a.md)";
+    "[Intro](01-codex-skills-basics.md#before-you-start) and [README](README.md) and [external](https://example.com/a.md) and [other tutorial](../claude-code-cli/README.md)";
 
   assert.equal(
     rewriteMarkdownLinks(markdown),
-    "[Intro](01-codex-skills-basics.html#before-you-start) and [README](index.html) and [external](https://example.com/a.md)",
+    "[Intro](01-codex-skills-basics.html#before-you-start) and [README](index.html) and [external](https://example.com/a.md) and [other tutorial](../claude-code-cli/README.md)",
   );
 });
 
@@ -52,6 +53,89 @@ test("exports tutorial Markdown as filesystem-openable HTML pages", async () => 
   assert.doesNotMatch(index, /\| --- \| --- \|/);
   assert.match(basics, /href="index\.html"/);
   assert.doesNotMatch(index, /href="01-basics\.md/);
+});
+
+test("claude code basic manual has a documented offline HTML export", async () => {
+  const repoRoot = path.resolve(__dirname, "..");
+  const packageJson = JSON.parse(
+    fs.readFileSync(path.join(repoRoot, "package.json"), "utf8"),
+  );
+  const exportCommand = packageJson.scripts["export:claude-code-basic-manual-html"];
+
+  assert.ok(exportCommand);
+  assert.match(
+    exportCommand,
+    /--source-dir "docs\/tutorials\/claude-code-basic-manual"/,
+  );
+  assert.match(
+    exportCommand,
+    /--output-dir "dist\/claude-code-basic-manual-html"/,
+  );
+  assert.match(exportCommand, /--manual-pages-only/);
+
+  const readme = fs.readFileSync(
+    path.join(
+      repoRoot,
+      "docs",
+      "tutorials",
+      "claude-code-basic-manual",
+      "README.md",
+    ),
+    "utf8",
+  );
+
+  assert.match(readme, /npm run export:claude-code-basic-manual-html/);
+  assert.match(readme, /Markdown 是本教程唯一手工维护的 source of truth/);
+  assert.match(readme, /HTML .*生成物/);
+  assert.match(readme, /不应手工编辑/);
+  assert.match(readme, /README 和编号章节/);
+
+  const outputDir = path.join(
+    fs.mkdtempSync(path.join(os.tmpdir(), "claude-code-basic-manual-html-")),
+    "dist",
+  );
+
+  await exportTutorialHtml({
+    sourceDir: path.join(repoRoot, "docs", "tutorials", "claude-code-basic-manual"),
+    outputDir,
+    manualPagesOnly: true,
+  });
+
+  const expectedFiles = [
+    "index.html",
+    "01-what-is-claude-code.html",
+    "02-install-and-first-run.html",
+    "03-read-a-real-project.html",
+    "04-make-your-first-change.html",
+    "05-debug-test-and-verify.html",
+    "06-context-memory-and-claude-md.html",
+    "07-planning-and-task-splitting.html",
+    "08-skills-and-repeatable-workflows.html",
+    "09-advanced-tooling-mcp-subagents-hooks.html",
+    "10-team-workflow-ci-and-review.html",
+    "11-anti-patterns-and-checklists.html",
+  ];
+
+  for (const fileName of expectedFiles) {
+    assert.ok(fs.existsSync(path.join(outputDir, fileName)), fileName);
+  }
+
+  assert.equal(fs.existsSync(path.join(outputDir, "writing-decisions.html")), false);
+
+  const indexPath = path.join(outputDir, "index.html");
+  const indexFileUrl = pathToFileURL(indexPath);
+  const index = fs.readFileSync(indexFileUrl, "utf8");
+
+  assert.equal(indexFileUrl.protocol, "file:");
+  assert.match(index, /href="01-what-is-claude-code\.html"/);
+  assert.doesNotMatch(index, /href="01-what-is-claude-code\.md/);
+
+  const firstRun = fs.readFileSync(
+    path.join(outputDir, "02-install-and-first-run.html"),
+    "utf8",
+  );
+  assert.match(firstRun, /href="\.\.\/claude-code-cli\/README\.md"/);
+  assert.doesNotMatch(firstRun, /href="\.\.\/claude-code-cli\/README\.html"/);
 });
 
 test("post-commit reminder only triggers for tutorial Markdown changes", () => {
