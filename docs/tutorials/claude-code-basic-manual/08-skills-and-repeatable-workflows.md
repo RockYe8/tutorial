@@ -36,7 +36,7 @@ Skill 不是魔法，也不是“更长的提示词”。它的价值在于把�
 - 如果它对每次进入项目都有效，写进 `CLAUDE.md` 或 rules。
 - 如果它只在某类任务被触发时有效，写成 skill。
 
-例如，“本项目文档用中文，章节要包含场景、判断标准和校验清单”可以放进文档路径规则或项目 `CLAUDE.md`。但“为一张 tutorial ticket 读取 spec、研究底稿、相邻章节，写对应 Markdown，并验证 README 链接”更像一个 skill，因为它是一套按需执行的文档工作流。
+例如，“本项目文档用中文，章节要包含场景、判断标准和校验清单”可以放进文档路径规则或项目 `CLAUDE.md`。但“为一张 tutorial ticket 读取 spec、任务资料、相邻章节，写对应 Markdown，并验证 README 链接”更像一个 skill，因为它是一套按需执行的文档工作流。
 
 ## 内置 slash commands 与自定义 skills
 
@@ -248,6 +248,8 @@ grill-with-docs -> to-spec -> to-tickets
 这一章可以从 skill 设计角度再看一次。`grill-with-docs` 负责澄清和形成 shared understanding；`to-spec` 负责把已经稳定的理解写成共识契约；`to-tickets` 负责把契约拆成可执行反馈单元。每个 skill 都很小，但组合起来能支撑复杂工作。
 
 Matt Pocock workflow 里还有一些 shaping skills，例如 `wayfinder`、`research`、`prototype`。它们的共同点是：不直接替你进入实现，而是先回答“我们缺什么输入”。它们的产物应该回流到 spec、tickets、领域文档或设计决策，而不是绕过主流程。
+
+只读调查 prompt 可以理解成 `research` 思想的轻量版：它主要回答代码库内的未知，例如入口在哪里、数据从哪里来、现有测试覆盖什么；`research` 则更适合需要来源、沉淀和较大阅读量的任务。
 
 `CONTEXT.md` 和 ADR 也体现了同一个原则：稳定语言和少量关键决策应该沉淀为共享 artifact，减少每次会话的重复解释。但它们不替代 skill。`CONTEXT.md` 说明术语是什么，skill 说明遇到某类任务时怎么做。
 

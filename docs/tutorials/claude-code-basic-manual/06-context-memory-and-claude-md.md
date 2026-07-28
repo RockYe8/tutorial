@@ -355,7 +355,7 @@ Never run destructive commands.
 
 这个边界很重要：提示是方向盘，permissions 和 hooks 才是护栏。
 
-本章只需要建立基础心智模型。hooks 的完整写法、permissions 策略和进阶工具边界，会在后续进阶工具章节再展开。
+本章只需要建立基本理解。hooks 的完整写法、permissions 策略和进阶工具边界，会在后续进阶工具章节再展开。
 
 ## 一个最小 CLAUDE.md 模板
 

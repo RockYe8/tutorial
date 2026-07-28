@@ -18,7 +18,7 @@
 
 ```text
 理解 Claude Code
-  -> 安装并安全启动
+  -> 第一次启动
   -> 读懂真实项目
   -> 完成第一次小改动
   -> 调试、测试和验证
@@ -34,8 +34,8 @@
 
 | 顺序 | 章节 | 用途 |
 | --- | --- | --- |
-| 01 | [什么是 Claude Code](01-what-is-claude-code.md) | 建立 agentic coding tool 的基础心智模型，区分 Claude Code、普通聊天和代码补全。 |
-| 02 | [安装与第一次启动](02-install-and-first-run.md) | 说明 CLI、IDE、桌面端和 Web 的入口差异，以及工作目录、权限提示和第一次安全使用。 |
+| 01 | [什么是 Claude Code](01-what-is-claude-code.md) | 建立对 agentic coding tool 的基本理解，区分 Claude Code、普通聊天和代码补全。 |
+| 02 | [第一次启动](02-install-and-first-run.md) | 说明 CLI、IDE、桌面端和 Web 的入口差异，以及工作目录、权限提示和第一次安全使用。 |
 | 03 | [让 Claude Code 先读懂真实项目](03-read-a-real-project.md) | 展示如何从宽问题到窄问题理解陌生仓库，控制上下文，并得到可复用的读代码产物。 |
 | 04 | [完成第一次小范围修改](04-make-your-first-change.md) | 讲清如何描述需求、判断是否需要 planning、执行修改、查看 diff 并确认范围。 |
 | 05 | [调试、测试与验证闭环](05-debug-test-and-verify.md) | 建立先复现、再定位、再修复的调试纪律，并组合测试、lint、typecheck、diff 和 review。 |
@@ -51,7 +51,7 @@
 | 我现在的问题 | 建议阅读 |
 | --- | --- |
 | 我还不确定 Claude Code 和聊天机器人、IDE 补全有什么区别。 | [01 - 什么是 Claude Code](01-what-is-claude-code.md) |
-| 我想知道该从 CLI、IDE、桌面端还是 Web 开始。 | [02 - 安装与第一次启动](02-install-and-first-run.md) |
+| 我想知道该从 CLI、IDE、桌面端还是 Web 开始。 | [02 - 第一次启动](02-install-and-first-run.md) |
 | 我进入一个陌生仓库，不知道该让 Claude 先读什么。 | [03 - 让 Claude Code 先读懂真实项目](03-read-a-real-project.md) |
 | 我有一个小需求，想让 Claude 改代码但又怕范围扩散。 | [04 - 完成第一次小范围修改](04-make-your-first-change.md) |
 | 程序报错了，我想让 Claude 帮忙 debug。 | [05 - 调试、测试与验证闭环](05-debug-test-and-verify.md) |

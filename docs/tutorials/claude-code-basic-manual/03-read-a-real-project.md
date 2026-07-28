@@ -1,6 +1,6 @@
 # 03 - 让 Claude Code 先读懂真实项目
 
-[上一章：安装与第一次启动](02-install-and-first-run.md) | [返回目录](README.md) | [下一章：完成第一次小范围修改](04-make-your-first-change.md)
+[上一章：第一次启动](02-install-and-first-run.md) | [返回目录](README.md) | [下一章：完成第一次小范围修改](04-make-your-first-change.md)
 
 上一章讲的是第一次启动：站在正确的项目目录里，先只读了解，理解权限提示和工具边界。
 
