@@ -4,6 +4,7 @@
     "test": "node test/tutorial-html-export.test.cjs",
     "export:tutorial-html": "node scripts/export-tutorial-html.cjs",
     "export:all-tutorials-html": "node scripts/export-all-tutorials-html.cjs",
+    "export:codex-cli-html": "node scripts/export-tutorial-html.cjs --source-dir \"docs/tutorials/codex-cli\" --output-dir \"dist/codex-cli-html\"",
     "export:claude-code-html": "node scripts/export-tutorial-html.cjs --source-dir \"docs/tutorials/claude-code-cli\" --output-dir \"dist/claude-code-cli-html\"",
     "export:claude-code-basic-manual-html": "node scripts/export-tutorial-html.cjs --source-dir \"docs/tutorials/claude-code-basic-manual\" --output-dir \"dist/claude-code-basic-manual-html\" --manual-pages-only"
   }

@@ -1,5 +1,13 @@
 # Tutorial
 
+## Codex CLI 入门教程
+
+- [教程首页](docs/tutorials/codex-cli/README.md)
+- [1. 安装 Codex CLI](docs/tutorials/codex-cli/01-install-and-verify.md)
+- [2. 登录与认证：选择 ChatGPT 账号或 API Key](docs/tutorials/codex-cli/02-authentication-and-configuration.md)
+- [3. 第一次进入项目：让 Codex 安全地开始工作](docs/tutorials/codex-cli/03-first-project-workflow.md)
+- 本地 HTML 导出：`npm run export:codex-cli-html`
+
 ## Claude Code CLI 入门教程
 
 - [教程首页](docs/tutorials/claude-code-cli/README.md)
@@ -35,6 +43,7 @@
 - `npm test`
 - `npm run export:all-tutorials-html`
 - `npm run export:tutorial-html`
+- `npm run export:codex-cli-html`
 - `npm run export:claude-code-html`
 - `npm run export:claude-code-basic-manual-html`
 - `npm run install:tutorial-html-reminder`
