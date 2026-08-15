@@ -38,6 +38,25 @@
 - [2. 从 Setup 到 Code Review 的工程主链路](docs/tutorials/matt-pocock-skills/02-engineering-workflow.md)
 - [3. 22 个本地 Skill 的场景速写](docs/tutorials/matt-pocock-skills/03-local-skill-scenarios.md)
 
+## Agent Skill Engineering Handbook
+
+- [手册首页](docs/tutorials/agent-skill-engineering-handbook/README.md)
+- [1. 重新理解 Skill](docs/tutorials/agent-skill-engineering-handbook/01-understanding-skill.md)
+- [2. Activation 先于 Instructions](docs/tutorials/agent-skill-engineering-handbook/02-activation-before-instructions.md)
+- [3. 写好 Skill Body](docs/tutorials/agent-skill-engineering-handbook/03-writing-the-skill-body.md)
+- [4. 设计 Supporting Resources](docs/tutorials/agent-skill-engineering-handbook/04-designing-supporting-resources.md)
+- [5. 从 Scripts 到 Tools](docs/tutorials/agent-skill-engineering-handbook/05-from-scripts-to-tools.md)
+- [6. 先评估，再信任](docs/tutorials/agent-skill-engineering-handbook/06-evaluation-before-trust.md)
+- [7. 安全与治理](docs/tutorials/agent-skill-engineering-handbook/07-security-and-governance.md)
+- [8. 生命周期与维护](docs/tutorials/agent-skill-engineering-handbook/08-lifecycle-and-maintenance.md)
+- [9. 从零构建一个 Pro-Level Skill](docs/tutorials/agent-skill-engineering-handbook/09-building-a-pro-level-skill.md)
+- [附录 A：SKILL.md 模板与填写指南](docs/tutorials/agent-skill-engineering-handbook/appendix-a-skill-md-template.md)
+- [附录 B：Skill 目录结构与 Bundle 形态决策指南](docs/tutorials/agent-skill-engineering-handbook/appendix-b-directory-patterns.md)
+- [附录 C：Activation 与 Description 测试夹具](docs/tutorials/agent-skill-engineering-handbook/appendix-c-activation-description-fixtures.md)
+- [附录 D：Evaluation 与 Forward Testing Checklist](docs/tutorials/agent-skill-engineering-handbook/appendix-d-evaluation-forward-testing-checklist.md)
+- [附录 E：Security / Release Checklist](docs/tutorials/agent-skill-engineering-handbook/appendix-e-security-release-checklist.md)
+- [v1.0 Readiness Checklist](docs/tutorials/agent-skill-engineering-handbook/v1.0-readiness-checklist.md)
+
 ## 维护命令
 
 - `npm test`

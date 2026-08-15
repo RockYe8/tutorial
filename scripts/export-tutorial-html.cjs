@@ -42,7 +42,36 @@ function isManualPage(fileName) {
 }
 
 function isPublishableTutorialPage(fileName) {
-  return isManualPage(fileName);
+  return (
+    isManualPage(fileName) ||
+    /^appendix-[a-z]-.+\.md$/i.test(fileName) ||
+    /^v\d+(?:\.\d+)*-.+\.md$/i.test(fileName)
+  );
+}
+
+function rewriteMarkdownLinkTarget(target, { exportedMarkdownFiles } = {}) {
+  if (/^(?:[a-z][a-z0-9+.-]*:|#)/i.test(target)) {
+    return target;
+  }
+
+  const targetMatch = target.match(/^([^#\s]+\.md)(#[^\s]+)?$/i);
+  if (!targetMatch) {
+    return target;
+  }
+
+  const [, file, anchor = ""] = targetMatch;
+  const isSameFolderLink = !/[\\/]/.test(file);
+  const exportedFiles = exportedMarkdownFiles
+    ? new Set([...exportedMarkdownFiles].map((fileName) => fileName.toLowerCase()))
+    : null;
+  const isExportedFile =
+    !exportedFiles || exportedFiles.has(path.basename(file).toLowerCase());
+
+  if (!isSameFolderLink || !isExportedFile) {
+    return target;
+  }
+
+  return `${markdownFileToHtmlFile(file)}${anchor}`;
 }
 
 function rewriteMarkdownLinks(markdown, { exportedMarkdownFiles } = {}) {
@@ -53,29 +82,52 @@ function rewriteMarkdownLinks(markdown, { exportedMarkdownFiles } = {}) {
   return markdown.replace(
     /(\[[^\]]+\]\()((?![a-z][a-z0-9+.-]*:|#)([^)\s#]+\.md))(#[^)]+)?(\))/gi,
     (_match, before, target, file, anchor = "", after) => {
-      const isSameFolderLink = !/[\\/]/.test(file);
-      const isExportedFile =
-        !exportedFiles || exportedFiles.has(file.toLowerCase());
-
-      if (!isSameFolderLink || !isExportedFile) {
-        return `${before}${target}${anchor}${after}`;
-      }
-
-      return `${before}${markdownFileToHtmlFile(target)}${anchor}${after}`;
+      const rewrittenTarget = rewriteMarkdownLinkTarget(`${target}${anchor}`, {
+        exportedMarkdownFiles: exportedFiles,
+      });
+      return `${before}${rewrittenTarget}${after}`;
     },
   );
 }
 
-function renderInline(markdown) {
+function extractReferenceDefinitions(markdown, options = {}) {
+  const referenceDefinitions = new Map();
+  const contentLines = [];
+
+  for (const line of markdown.split(/\r?\n/)) {
+    const definition = line.match(/^\[([^\]]+)\]:\s+(\S+)\s*$/);
+    if (definition) {
+      referenceDefinitions.set(
+        definition[1].toLowerCase(),
+        rewriteMarkdownLinkTarget(definition[2], options),
+      );
+      continue;
+    }
+
+    contentLines.push(line);
+  }
+
+  return {
+    markdown: contentLines.join("\n"),
+    referenceDefinitions,
+  };
+}
+
+function renderInline(markdown, { referenceDefinitions } = {}) {
   return escapeHtml(markdown)
     .replace(/`([^`]+)`/g, "<code>$1</code>")
     .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, text, href) => {
       return `<a href="${escapeHtml(href)}">${text}</a>`;
+    })
+    .replace(/\[([^\]]+)\]\[([^\]]+)\]/g, (match, text, id) => {
+      const href = referenceDefinitions?.get(id.toLowerCase());
+      if (!href) return match;
+      return `<a href="${escapeHtml(href)}">${text}</a>`;
     });
 }
 
-function renderTable(rows) {
+function renderTable(rows, options = {}) {
   const renderedRows = rows.map((row, rowIndex) => {
     const cells = row
       .trim()
@@ -83,14 +135,19 @@ function renderTable(rows) {
       .split("|")
       .map((cell) => cell.trim());
     const tag = rowIndex === 0 ? "th" : "td";
-    return `<tr>${cells.map((cell) => `<${tag}>${renderInline(cell)}</${tag}>`).join("")}</tr>`;
+    return `<tr>${cells.map((cell) => `<${tag}>${renderInline(cell, options)}</${tag}>`).join("")}</tr>`;
   });
 
   return `<table>\n${renderedRows.join("\n")}\n</table>`;
 }
 
 function renderMarkdown(markdown, options = {}) {
-  const lines = rewriteMarkdownLinks(markdown, options).split(/\r?\n/);
+  const extracted = extractReferenceDefinitions(markdown, options);
+  const renderOptions = {
+    ...options,
+    referenceDefinitions: extracted.referenceDefinitions,
+  };
+  const lines = rewriteMarkdownLinks(extracted.markdown, options).split(/\r?\n/);
   const html = [];
   let paragraph = [];
   let list = [];
@@ -101,17 +158,17 @@ function renderMarkdown(markdown, options = {}) {
 
   const flushParagraph = () => {
     if (paragraph.length === 0) return;
-    html.push(`<p>${renderInline(paragraph.join(" "))}</p>`);
+    html.push(`<p>${renderInline(paragraph.join(" "), renderOptions)}</p>`);
     paragraph = [];
   };
   const flushList = () => {
     if (list.length === 0) return;
-    html.push(`<ul>\n${list.map((item) => `<li>${renderInline(item)}</li>`).join("\n")}\n</ul>`);
+    html.push(`<ul>\n${list.map((item) => `<li>${renderInline(item, renderOptions)}</li>`).join("\n")}\n</ul>`);
     list = [];
   };
   const flushTable = () => {
     if (table.length === 0) return;
-    html.push(renderTable(table));
+    html.push(renderTable(table, renderOptions));
     table = [];
   };
   const flushBlocks = () => {
@@ -161,7 +218,7 @@ function renderMarkdown(markdown, options = {}) {
       const level = heading[1].length;
       const text = heading[2].trim();
       const id = slugify(text);
-      html.push(`<h${level} id="${escapeHtml(id)}">${renderInline(text)}</h${level}>`);
+      html.push(`<h${level} id="${escapeHtml(id)}">${renderInline(text, renderOptions)}</h${level}>`);
       continue;
     }
 
@@ -220,7 +277,7 @@ async function exportTutorialHtml({
   const markdownFiles = entries
     .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
     .map((entry) => entry.name)
-    .filter((fileName) => !manualPagesOnly || isManualPage(fileName))
+    .filter((fileName) => !manualPagesOnly || isPublishableTutorialPage(fileName))
     .sort((a, b) => {
       if (a.toLowerCase() === "readme.md") return -1;
       if (b.toLowerCase() === "readme.md") return 1;

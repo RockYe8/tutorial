@@ -8,6 +8,7 @@ const { pathToFileURL } = require("node:url");
 const {
   exportAllTutorialsHtml,
   exportTutorialHtml,
+  isPublishableTutorialPage,
   rewriteMarkdownLinks,
 } = require("../scripts/export-tutorial-html.cjs");
 const {
@@ -54,6 +55,38 @@ test("exports tutorial Markdown as filesystem-openable HTML pages", async () => 
   assert.doesNotMatch(index, /\| --- \| --- \|/);
   assert.match(basics, /href="index\.html"/);
   assert.doesNotMatch(index, /href="01-basics\.md/);
+});
+
+test("renders reference-style citations as clickable links", async () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "tutorial-reference-links-"));
+  const sourceDir = path.join(tmp, "source");
+  const outputDir = path.join(tmp, "dist");
+  fs.mkdirSync(sourceDir, { recursive: true });
+
+  fs.writeFileSync(
+    path.join(sourceDir, "README.md"),
+    "# Home\n\nRead [Chapter][chapter].\n\n[chapter]: 01-chapter.md\n",
+  );
+  fs.writeFileSync(
+    path.join(sourceDir, "01-chapter.md"),
+    "# Chapter\n\nThis claim has a [Source][source].\n\n[source]: https://example.com/spec\n",
+  );
+
+  await exportTutorialHtml({ sourceDir, outputDir, manualPagesOnly: true });
+
+  const index = fs.readFileSync(path.join(outputDir, "index.html"), "utf8");
+  const chapter = fs.readFileSync(path.join(outputDir, "01-chapter.html"), "utf8");
+
+  assert.match(index, /href="01-chapter\.html"/);
+  assert.doesNotMatch(index, /\[chapter\]:/);
+  assert.match(chapter, /href="https:\/\/example\.com\/spec"/);
+  assert.doesNotMatch(chapter, /\[source\]:/);
+});
+
+test("publishes appendices and versioned readiness checklists", () => {
+  assert.equal(isPublishableTutorialPage("appendix-a-skill-template.md"), true);
+  assert.equal(isPublishableTutorialPage("v1.0-readiness-checklist.md"), true);
+  assert.equal(isPublishableTutorialPage("research-notes.md"), false);
 });
 
 test("claude code basic manual has a documented offline HTML export", async () => {
