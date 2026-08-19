@@ -4,50 +4,40 @@
 
 重点不是 Todo App 本身，而是观察一件事：当你把“我想做个 Todo App”丢给 AI 时，普通 prompt 往往会让它太快开始写代码；Skills 会先把“该怎样工作”固定下来，让 agent 用一套可重复的流程推进。
 
-Matt Pocock 在 [AI Hero Skills Catalog](https://www.aihero.dev/skills-catalog) 里把 Skill 描述成一种 focused, repeatable workflow；[`mattpocock/skills`](https://github.com/mattpocock/skills) 这个仓库也把它们放在“真实工程纪律”里理解，而不是把它们当成一串神奇咒语。这个心智模型很重要：Skill 不是“更长的 prompt”，而是“下次遇到同类问题时，agent 应该重复执行的工作方式”。
+Matt Pocock 在 [AI Hero Skills](https://www.aihero.dev/skills) 里把 Skills 放在一组小而清晰、容易改造的工作指令里理解；[`mattpocock/skills`](https://github.com/mattpocock/skills) 这个仓库也强调它们是 small, composable workflows，而不是一串神奇咒语。这个心智模型很重要：Skill 不是“更长的 prompt”，而是“下次遇到同类问题时，agent 应该重复执行的工作方式”。
 
 <a id="before-you-start"></a>
 ## 开始前：先安装整套 Skills
 
 如果你想跟着这组教程练习，建议先安装完整的 Matt Pocock Skills，而不是只挑 `/grill-me` 或 `/implement` 几个名字。原因很简单：这套教程讲的是组合工作流，后面的主链路会把澄清、spec、tickets、实现、测试、review、handoff 串起来看。
 
-在线安装时，可以使用公开安装页和仓库 README 推荐的 skills.sh 命令。对 Codex，本教程使用：
+在线安装时，可以使用官方 installer。对 Codex，本教程使用：
 
 ```powershell
 npx skills@latest add mattpocock/skills
 ```
 
-安装完成后，开启一个新的 Codex 会话，让 agent 重新发现可用 Skills。在 Windows 上，Codex 的本地 Skill 通常会出现在类似这样的路径：
+安装完成后，开启一个新的 Codex 任务，让 agent 重新发现可用 Skills。在这台 Windows/Codex 环境里，当前 installer 记录显示 Matt Pocock Skills 来自 `mattpocock/skills`，文件位于 `.agents\skills`。本教程后续默认以这个位置为本机示例：
 
 ```text
-C:\Users\<your-username>\.codex\skills\grill-me\SKILL.md
+C:\Users\<your-username>\.agents\skills\grill-me\SKILL.md
 ```
 
-如果你使用 Claude Code，在线安装方式会随 Claude Code 当前的 Skill/plugin 支持而变化；请以 Matt Pocock Skills README 或你使用的安装页为准。安装完成后，Windows 上 Claude Code 的本地 Skill 目录通常会是：
+如果你的机器上还保留着旧目录 `C:\Users\<your-username>\.codex\skills`，它更像历史副本，不应再作为判断当前 Codex 是否加载了最新 Matt Pocock Skills 的主要依据。更新后新开的 Codex 任务会更稳妥地重新加载 `.agents\skills` 里的版本。
 
-```text
-C:\Users\<your-username>\.claude\skills\grill-me\SKILL.md
-```
+如果你使用 Claude Code，官方 README 目前推荐通过 Matt Pocock Skills plugin 安装，并让插件保持更新；请以 Matt Pocock Skills README 或你使用的安装页为准。
 
 如果你处在离线环境，也可以手动复制。注意要复制完整 Skill 文件夹，而不是只复制一个 `SKILL.md` 文件。例如 `grill-me` 文件夹里如果有 `references/`、`scripts/` 或其他辅助文件，也要一起放进目标 agent 的 skills 目录。复制后，开启新会话或重启对应 agent，让它重新加载技能列表。
 
 手动复制后的目录形状应该像这样：
 
 ```text
-C:\Users\<your-username>\.codex\skills\grill-me\SKILL.md
-C:\Users\<your-username>\.codex\skills\grill-with-docs\SKILL.md
-C:\Users\<your-username>\.codex\skills\to-spec\SKILL.md
+C:\Users\<your-username>\.agents\skills\grill-me\SKILL.md
+C:\Users\<your-username>\.agents\skills\grill-with-docs\SKILL.md
+C:\Users\<your-username>\.agents\skills\to-spec\SKILL.md
 ```
 
-Claude Code 则对应：
-
-```text
-C:\Users\<your-username>\.claude\skills\grill-me\SKILL.md
-C:\Users\<your-username>\.claude\skills\grill-with-docs\SKILL.md
-C:\Users\<your-username>\.claude\skills\to-spec\SKILL.md
-```
-
-这篇教程不会详细比较所有安装渠道。你只需要先确保：完整 Skills 已放到当前 agent 能读取的位置，并且新会话里能看到这些 Skill 名称。
+不同 agent 的插件或本地 Skill 目录会随工具版本变化。这篇教程不会详细比较所有安装渠道。你只需要先确保：完整 Skills 已放到当前 agent 能读取的位置，并且新会话里能看到这些 Skill 名称。
 
 <a id="skills-as-workflows"></a>
 ## Skills 是可复用工作流，不是魔法 prompt

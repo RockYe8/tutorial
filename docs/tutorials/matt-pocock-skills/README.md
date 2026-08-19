@@ -2,7 +2,7 @@
 
 这组教程是我的个人学习笔记，也面向正在学习 Matt Pocock Skills 的开发者。它不把 Skills 当成一串要背的命令，而是把它们放进真实 AI 编程流程里：什么时候该先被追问，什么时候该沉淀领域语言，什么时候该写 spec，什么时候该拆 tickets，什么时候才轮到实现和 review。
 
-这不是 Matt Pocock 官方文档，也不是官方中文翻译；它是一份基于本地已安装 Skills、AI Hero 和 `mattpocock/skills` 公开资料整理出的中文实践导航。遇到安装方式、Skill 细节或上游行为变化时，请以官方来源和你本地的 `SKILL.md` 为准。
+这不是 Matt Pocock 官方文档，也不是官方中文翻译；它是一份基于本地已安装 Skills、AI Hero 和 `mattpocock/skills` 公开资料整理出的中文实践导航。遇到安装方式、Skill 名称、Skill 细节或上游行为变化时，请以官方来源和你本地的 `SKILL.md` 为准。当前这台 Windows/Codex 环境的安装记录指向 `.agents\skills`，旧的 `.codex\skills` 目录如果仍然存在，通常只应视为历史副本。
 
 整组教程使用 Todo 应用作为贯穿示例。Todo 足够熟悉，读者不用先学习复杂业务，就能把注意力放在工作流本身。第一篇从一个个人 Todo MVP 开始，帮助新手理解 Codex Skills 为什么不是普通 prompt；第二篇接着一个已有 Todo 应用，演示如何把标签、筛选和归档功能从模糊想法推进到可实现、可验证的工程工作。
 
@@ -10,7 +10,7 @@
 
 0. [01 - 从 Todo MVP 理解 Codex Skills：开始前先安装整套 Skills](01-codex-skills-basics.md#before-you-start)
 
-   如果你还没有安装 Matt Pocock Skills，先看第一篇的安装部分。教程建议直接安装整套 Skills，因为后续章节会把它们作为一组可组合工作流使用，而不是只挑几个命令背下来。
+   如果你还没有安装 Matt Pocock Skills，先看第一篇的安装部分。教程建议直接安装整套 Skills，因为后续章节会把它们作为一组可组合工作流使用，而不是只挑几个命令背下来。更新或重装后，建议新开一个 Codex 任务，让 agent 重新加载 `.agents\skills` 中记录来源为 `mattpocock/skills` 的版本。
 
 1. [01 - 从 Todo MVP 理解 Codex Skills：新手基础篇](01-codex-skills-basics.md)（已完成）
 
@@ -60,7 +60,7 @@ README 只负责帮你找路。可模仿的调用文本放在对应教程场景�
 | 讨论已经清楚了，我想把它变成正式可构建说明 | 用 `/to-spec` 合成正式规格 | [02 - 从 Setup 到 Code Review 的工程主链路：用 `/to-spec` 合成正式规格](02-engineering-workflow.md#to-spec) |
 | 已经有 spec，需要拆成可以逐个交给 agent 的工作 | 用 `/to-tickets` 拆垂直切片 | [02 - 从 Setup 到 Code Review 的工程主链路：用 `/to-tickets` 拆垂直切片](02-engineering-workflow.md#to-tickets) |
 | 我想 review tickets 是否能执行、验证和并行推进 | 在 `/to-tickets` 后做人工检查 | [02 - 从 Setup 到 Code Review 的工程主链路：Review tickets 的六个问题](02-engineering-workflow.md#ticket-review-checklist) |
-| 我有一个明确 ticket，希望 Codex 自己实现、验证、review | 用 `/implement` 执行单个 ticket | [02 - 从 Setup 到 Code Review 的工程主链路：用 `/implement` 执行一个 ticket](02-engineering-workflow.md#implement) |
+| 我有一个明确 ticket，希望 Codex 实现、验证、review，并按约定收尾 | 用 `/implement` 执行单个 ticket | [02 - 从 Setup 到 Code Review 的工程主链路：用 `/implement` 执行一个 ticket](02-engineering-workflow.md#implement) |
 | 我正在实现，需要先写失败测试再让代码通过 | 在 `/implement` 内部使用 `/tdd` | [02 - 从 Setup 到 Code Review 的工程主链路：`/tdd` 是实现内部的红绿循环](02-engineering-workflow.md#tdd) |
 | 代码写完了，想同时检查仓库标准和原始 spec | 用 `/code-review` 关闭反馈环 | [02 - 从 Setup 到 Code Review 的工程主链路：用 `/code-review` 关闭反馈环](02-engineering-workflow.md#code-review) |
 
@@ -87,36 +87,39 @@ README 只负责帮你找路。可模仿的调用文本放在对应教程场景�
 | 我想改善代码结构，但还没有明确改哪个模块 | 用 `/improve-codebase-architecture` 找改进 tickets | [02 - 从 Setup 到 Code Review 的工程主链路：用 `/improve-codebase-architecture` 找架构改进点](02-engineering-workflow.md#improve-codebase-architecture) |
 | 我正在讨论模块边界、接口深浅、测试接缝 | 用 `/codebase-design` 收窄模块设计 | [02 - 从 Setup 到 Code Review 的工程主链路：用 `/codebase-design` 讨论模块设计](02-engineering-workflow.md#codebase-design) |
 | 合并或 rebase 时出现冲突，需要保留双方意图 | 用 `/resolving-merge-conflicts` 解决冲突 | [02 - 从 Setup 到 Code Review 的工程主链路：用 `/resolving-merge-conflicts` 解决冲突](02-engineering-workflow.md#resolving-merge-conflicts) |
-| 我以后想写自己的 Skill | 用 `/writing-great-skills` 学写可重复 workflow | [02 - 从 Setup 到 Code Review 的工程主链路：用 `/writing-great-skills` 学写 Skill](02-engineering-workflow.md#writing-great-skills) |
+| 我以后想把流程写成 agent 能复用的说明 | 用 `/writing-for-agents` 学写可重复 workflow | [02 - 从 Setup 到 Code Review 的工程主链路：用 `/writing-for-agents` 学写给 agent 的文档](02-engineering-workflow.md#writing-for-agents) |
 
-## 22 个本地有效 Skills 速查索引
+## Matt Pocock 核心 Skills 速查索引
 
-这个索引只覆盖当前本地有效的 22 个 Matt Pocock Skills，不使用 skills.sh 旧清单里的历史名称。每一项都指向一个带上下文的教程场景；需要可模仿的调用文本时，点进场景看，不要把 README 当成孤立模板库。
+这个索引覆盖 Matt Pocock 当前公开资料和本地安装中最常用的核心 Skills，不再写死总数。上游 `mattpocock/skills` 会继续增删或重命名 Skills，本地 `.agents\skills` 也可能包含额外个人或实验性 Skills；需要最终判断时，以 AI Hero、`mattpocock/skills` README 和你本地的 `SKILL.md` 为准。每一项都指向一个带上下文的教程场景；需要可模仿的调用文本时，点进场景看，不要把 README 当成孤立模板库。
 
 | Skill | 一句话用途 | 教程场景 |
 | --- | --- | --- |
-| `/ask-matt` | 当你知道自己卡住了、但不知道该进入哪个 Skill 或流程时，用它选择下一步。 | [03 - 22 个本地 Skill 的场景速写：`/ask-matt` 不知道下一步该用哪个 Skill](03-local-skill-scenarios.md#ask-matt) |
-| `/code-review` | 当一个实现切片完成后，用它同时按仓库 Standards 和原始 Spec 两条轴检查偏差。 | [03 - 22 个本地 Skill 的场景速写：`/code-review` 同时检查 Standards 与 Spec](03-local-skill-scenarios.md#code-review) |
-| `/codebase-design` | 当模块边界、接口深浅或测试接缝还不清楚时，用它把设计讨论收窄成可执行判断。 | [03 - 22 个本地 Skill 的场景速写：`/codebase-design` 讨论模块边界和深模块](03-local-skill-scenarios.md#codebase-design) |
-| `/diagnosing-bugs` | 当程序坏了或测试失败时，用它先建立可复现的红色反馈，再定位和修复。 | [03 - 22 个本地 Skill 的场景速写：`/diagnosing-bugs` 先复现，再修 bug](03-local-skill-scenarios.md#diagnosing-bugs) |
-| `/domain-modeling` | 当术语、实体关系或关键决策需要长期复用时，用它沉淀到领域文档和 ADR。 | [03 - 22 个本地 Skill 的场景速写：`/domain-modeling` 把稳定术语和关键决定写下来](03-local-skill-scenarios.md#domain-modeling) |
-| `/grill-me` | 当你只有一个没有仓库上下文的模糊想法时，用它先追问范围、非目标和验收边界。 | [03 - 22 个本地 Skill 的场景速写：`/grill-me` 没有仓库上下文时先追问](03-local-skill-scenarios.md#grill-me) |
-| `/grill-with-docs` | 当真实仓库里的需求还不稳定时，用它带着项目约定和领域文档澄清问题。 | [03 - 22 个本地 Skill 的场景速写：`/grill-with-docs` 带着仓库文档追问](03-local-skill-scenarios.md#grill-with-docs) |
-| `/grilling` | 当你想强化追问纪律本身时，用它检查范围、风险、验收和最容易返工的决定。 | [03 - 22 个本地 Skill 的场景速写：`/grilling` 追问背后的纪律](03-local-skill-scenarios.md#grilling) |
-| `/handoff` | 当会话变长或需要换任务继续时，用它把当前 artifacts、状态、问题和下一步整理成交接上下文。 | [03 - 22 个本地 Skill 的场景速写：`/handoff` 跨会话保留可执行上下文](03-local-skill-scenarios.md#handoff) |
-| `/implement` | 当已有 ready ticket 和 spec 时，用它作为外层执行单位完成修改、验证、review 和提交。 | [03 - 22 个本地 Skill 的场景速写：`/implement` 以 ticket 为外层执行单位](03-local-skill-scenarios.md#implement) |
-| `/improve-codebase-architecture` | 当代码结构开始显出压力、但还没有明确改造点时，用它发现架构健康问题并形成 tickets。 | [03 - 22 个本地 Skill 的场景速写：`/improve-codebase-architecture` 发现架构健康问题](03-local-skill-scenarios.md#improve-codebase-architecture) |
-| `/prototype` | 当 UI、状态模型或交互手感不确定时，用它写可丢弃原型回答一个具体设计问题。 | [03 - 22 个本地 Skill 的场景速写：`/prototype` 用可丢弃代码回答一个设计问题](03-local-skill-scenarios.md#prototype) |
-| `/research` | 当需要外部事实或资料依据时，用它把来源、观察和建议沉淀成可追溯 Markdown。 | [03 - 22 个本地 Skill 的场景速写：`/research` 把外部资料变成可追溯笔记](03-local-skill-scenarios.md#research) |
-| `/resolving-merge-conflicts` | 当 merge 或 rebase 冲突出现时，用它先理解双方意图，再做最小必要解决和验证。 | [03 - 22 个本地 Skill 的场景速写：`/resolving-merge-conflicts` 保留双方意图](03-local-skill-scenarios.md#resolving-merge-conflicts) |
-| `/setup-matt-pocock-skills` | 当一个仓库第一次使用这套 Skills 时，用它配置 issue tracker、triage labels 和 domain docs 等协作约定。 | [03 - 22 个本地 Skill 的场景速写：`/setup-matt-pocock-skills` 配置仓库协作约定](03-local-skill-scenarios.md#setup-matt-pocock-skills) |
-| `/tdd` | 当实现中有清晰行为可以锁定时，用它在 `/implement` 内部建立红绿重构循环。 | [03 - 22 个本地 Skill 的场景速写：`/tdd` 在实现内部建立红绿循环](03-local-skill-scenarios.md#tdd) |
-| `/teach` | 当你想把仓库变成学习环境时，用它按步骤讲解、练习并保留学习状态。 | [03 - 22 个本地 Skill 的场景速写：`/teach` 把仓库变成学习环境](03-local-skill-scenarios.md#teach) |
-| `/to-spec` | 当讨论已经稳定时，用它把 shared understanding 合成后续 tickets、implementation 和 review 可引用的 spec。 | [03 - 22 个本地 Skill 的场景速写：`/to-spec` 把稳定理解合成 buildable spec](03-local-skill-scenarios.md#to-spec) |
-| `/to-tickets` | 当已有 spec 但工作太大时，用它拆成可独立实现、可验证、带 blocking 关系的垂直切片。 | [03 - 22 个本地 Skill 的场景速写：`/to-tickets` 拆成可独立实现的垂直切片](03-local-skill-scenarios.md#to-tickets) |
-| `/triage` | 当外部来了原始 issue 时，用它判断入口质量、补充问题和是否 ready-for-agent。 | [03 - 22 个本地 Skill 的场景速写：`/triage` 处理外部来的原始 issue](03-local-skill-scenarios.md#triage) |
-| `/wayfinder` | 当目标巨大且未知点太多时，用它先画探索地图和 decision tickets，而不是直接写 spec 或实现。 | [03 - 22 个本地 Skill 的场景速写：`/wayfinder` 为巨大模糊工作画未知地图](03-local-skill-scenarios.md#wayfinder) |
-| `/writing-great-skills` | 当你想把自己的重复工作流写成 Skill 时，用它设计触发条件、步骤、产物和验证方式。 | [03 - 22 个本地 Skill 的场景速写：`/writing-great-skills` 把自己的流程写成 Skill](03-local-skill-scenarios.md#writing-great-skills) |
+| `/ask-matt` | 当你知道自己卡住了、但不知道该进入哪个 Skill 或流程时，用它选择下一步。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/ask-matt` 不知道下一步该用哪个 Skill](03-local-skill-scenarios.md#ask-matt) |
+| `/code-review` | 当一个实现切片完成后，用它同时按仓库 Standards 和原始 Spec 两条轴检查偏差。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/code-review` 同时检查 Standards 与 Spec](03-local-skill-scenarios.md#code-review) |
+| `/codebase-design` | 当模块边界、接口深浅或测试接缝还不清楚时，用它把设计讨论收窄成可执行判断。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/codebase-design` 讨论模块边界和深模块](03-local-skill-scenarios.md#codebase-design) |
+| `/diagnosing-bugs` | 当程序坏了或测试失败时，用它先建立可复现的红色反馈，再定位和修复。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/diagnosing-bugs` 先复现，再修 bug](03-local-skill-scenarios.md#diagnosing-bugs) |
+| `/domain-modeling` | 当术语、实体关系或关键决策需要长期复用时，用它沉淀到领域文档和 ADR。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/domain-modeling` 把稳定术语和关键决定写下来](03-local-skill-scenarios.md#domain-modeling) |
+| `/grill-me` | 当你只有一个没有仓库上下文的模糊想法时，用它先追问范围、非目标和验收边界。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/grill-me` 没有仓库上下文时先追问](03-local-skill-scenarios.md#grill-me) |
+| `/grill-with-docs` | 当真实仓库里的需求还不稳定时，用它带着项目约定和领域文档澄清问题。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/grill-with-docs` 带着仓库文档追问](03-local-skill-scenarios.md#grill-with-docs) |
+| `/grilling` | 当你想强化追问纪律本身时，用它检查范围、风险、验收和最容易返工的决定。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/grilling` 追问背后的纪律](03-local-skill-scenarios.md#grilling) |
+| `/handoff` | 当会话变长或需要换任务继续时，用它把当前 artifacts、状态、问题和下一步整理成交接上下文。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/handoff` 跨会话保留可执行上下文](03-local-skill-scenarios.md#handoff) |
+| `/implement` | 当已有 ready ticket 和 spec 时，用它作为外层执行单位完成修改、验证、review，并按仓库约定收尾。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/implement` 以 ticket 为外层执行单位](03-local-skill-scenarios.md#implement) |
+| `/improve-codebase-architecture` | 当代码结构开始显出压力、但还没有明确改造点时，用它发现架构健康问题并形成 tickets。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/improve-codebase-architecture` 发现架构健康问题](03-local-skill-scenarios.md#improve-codebase-architecture) |
+| `/prototype` | 当 UI、状态模型或交互手感不确定时，用它写可丢弃原型回答一个具体设计问题。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/prototype` 用可丢弃代码回答一个设计问题](03-local-skill-scenarios.md#prototype) |
+| `/research` | 当需要外部事实或资料依据时，用它把来源、观察和建议沉淀成可追溯 Markdown。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/research` 把外部资料变成可追溯笔记](03-local-skill-scenarios.md#research) |
+| `/resolving-merge-conflicts` | 当 merge 或 rebase 冲突出现时，用它先理解双方意图，再做最小必要解决和验证。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/resolving-merge-conflicts` 保留双方意图](03-local-skill-scenarios.md#resolving-merge-conflicts) |
+| `/setup-matt-pocock-skills` | 当一个仓库第一次使用这套 Skills 时，用它配置 issue tracker、triage labels 和 domain docs 等协作约定。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/setup-matt-pocock-skills` 配置仓库协作约定](03-local-skill-scenarios.md#setup-matt-pocock-skills) |
+| `/tdd` | 当实现中有清晰行为可以锁定时，用它在 `/implement` 内部建立红绿重构循环。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/tdd` 在实现内部建立红绿循环](03-local-skill-scenarios.md#tdd) |
+| `/teach` | 当你想把仓库变成学习环境时，用它按步骤讲解、练习并保留学习状态。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/teach` 把仓库变成学习环境](03-local-skill-scenarios.md#teach) |
+| `/to-questionnaire` | 当某个决策必须交给别人回答时，用它把未知点整理成问卷。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/to-questionnaire` 把未知决策整理成问卷](03-local-skill-scenarios.md#to-questionnaire) |
+| `/to-spec` | 当讨论已经稳定时，用它把 shared understanding 合成后续 tickets、implementation 和 review 可引用的 spec。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/to-spec` 把稳定理解合成 buildable spec](03-local-skill-scenarios.md#to-spec) |
+| `/to-tickets` | 当已有 spec 但工作太大时，用它拆成可独立实现、可验证、带 blocking 关系的垂直切片。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/to-tickets` 拆成可独立实现的垂直切片](03-local-skill-scenarios.md#to-tickets) |
+| `/triage` | 当外部来了原始 issue 时，用它判断入口质量、补充问题和是否 ready-for-agent。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/triage` 处理外部来的原始 issue](03-local-skill-scenarios.md#triage) |
+| `/wait-what` | 当上一段解释没有讲明白时，用它要求 agent 停下来换一种说法。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/wait-what` 让上一段说明重新落地](03-local-skill-scenarios.md#wait-what) |
+| `/wayfinder` | 当目标巨大且未知点太多时，用它先画探索地图和 decision tickets，而不是直接写 spec 或实现。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/wayfinder` 为巨大模糊工作画未知地图](03-local-skill-scenarios.md#wayfinder) |
+| `/wizard` | 当有必须由人完成的外部操作时，用它生成交互式向导。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/wizard` 生成给人操作的交互式向导](03-local-skill-scenarios.md#wizard) |
+| `/writing-for-agents` | 当你想把重复流程、项目约定或 Skill 草案写成 agent 能执行的文档时，用它设计清晰说明。 | [03 - Matt Pocock 核心 Skill 的场景速写：`/writing-for-agents` 把流程写成 agent 能执行的文档](03-local-skill-scenarios.md#writing-for-agents) |
 
 ## 阅读与发布方式
 

@@ -1,6 +1,8 @@
-# 03 - 22 个本地 Skill 的场景速写
+# 03 - Matt Pocock 核心 Skill 的场景速写
 
-这篇是前两篇的补充。它不再重复完整主线，而是把当前本地有效的 Matt Pocock Skills 逐个放进一个具体处境里：你遇到什么问题、该怎样调用、agent 会怎样工作、产物应该流向哪里。
+这篇是前两篇的补充。它不再重复完整主线，而是把 Matt Pocock Skills 当前公开资料和本地安装中最常用的核心 Skills 逐个放进一个具体处境里：你遇到什么问题、该怎样调用、agent 会怎样工作、产物应该流向哪里。
+
+注意：上游 `mattpocock/skills` 会继续增删或重命名 Skills，本机 `.agents\skills` 也可能包含仓库之外的个人或实验性 Skills。所以这篇不再写死总数；真正使用前，以 AI Hero、`mattpocock/skills` README 和你本地对应的 `SKILL.md` 为准。
 
 这些场景仍然围绕 Todo 示例，但不要求都塞进同一个功能主线。主线 Skills 可以继续读第二篇；这里更像一本场景手册。
 
@@ -178,7 +180,7 @@ agent 会区分代码库事实和用户决策：已有 store 怎么组织是事�
 .scratch/todo-tags/spec.md
 ```
 
-`/implement` 负责完整交付：读上下文、修改文件、在适合接缝用 `/tdd`、运行验证、检查 diff、更新 issue comment、提交当前 ticket。
+`/implement` 负责把 ticket 推进到可验证状态：读上下文、修改文件、在适合接缝用 `/tdd`、运行验证、检查 diff，并按仓库约定处理 issue comment 或提交。验收项勾选、关闭 ticket 或发布状态仍然可能需要人工确认。
 
 产物是完成的 ticket 和提交。它不是“请写代码”的同义词，而是“请把这张执行单交付掉”。
 
@@ -301,6 +303,24 @@ prototype 的重点是回答问题，不是搭正式架构。如果原型开始�
 
 产物是学习计划、练习反馈和后续复习点。
 
+<a id="to-questionnaire"></a>
+
+## `/to-questionnaire`：把未知决策整理成问卷
+
+处境：Todo 标签功能已经讨论到一半，但关键答案在产品负责人或团队同事脑中，例如“归档任务是否还能被搜索”“标签是否允许重名”。
+
+```text
+/to-questionnaire
+
+Todo 标签和归档功能还有几个我不能代答的决策。
+请把这些未知点整理成一份问卷，让产品负责人可以逐项回答。
+问题要能直接回流到 spec 或 tickets。
+```
+
+它不替你做决定，而是把阻塞信息整理成别人能回答的表单。回答回来后，通常回到 `/grill-with-docs`、`/to-spec` 或 `/to-tickets`，不要让 agent 猜完继续实现。
+
+产物是问卷和决策空位清单。
+
 <a id="to-spec"></a>
 
 ## `/to-spec`：把稳定理解合成 buildable spec
@@ -369,20 +389,54 @@ Todo 应用可能要从个人工具升级成轻量团队任务管理。
 
 它产出探索地图，不产出实现计划。解决 map issue 后，结论通常回到 `/to-spec` 或 `/to-tickets`；如果改变领域语言，再补 `/domain-modeling`。不要把 `/wayfinder` 描述成通常回到 `/grill-with-docs`。
 
-<a id="writing-great-skills"></a>
+<a id="wait-what"></a>
 
-## `/writing-great-skills`：把自己的流程写成 Skill
+## `/wait-what`：让上一段说明重新落地
 
-处境：你发现自己经常写教程、验证 Markdown 锚点、检查 README 链接，想把这套动作沉淀下来。
+处境：agent 刚解释了 Todo 标签过滤设计，但用了太多抽象词，你看完仍然不知道应该改哪个文件、验证什么行为。
 
 ```text
-/writing-great-skills
+/wait-what
 
-我想把“为本仓库写教程文章并验证 README 锚点”沉淀成一个 Skill。
-请教我如何设计触发条件、输入、步骤、产物和验证清单。
+刚才关于标签过滤 selector 的解释没有落地。
+请换一种说法，用本仓库的术语重新解释：要改什么、为什么改、怎么验证。
 ```
 
-好 Skill 保存的是可重复工作方式，不是一段很长的万能 prompt。
+它适合在解释没听懂时立刻打断，而不是让模糊继续滚进 spec 或 implementation。好的重讲应该更短、更具体，并贴近当前仓库 vocabulary。
 
-产物是 Skill 设计草案：什么时候触发、先读什么、怎么执行、产出哪些 artifacts、如何验证。
+产物是重新组织过的解释。
+
+<a id="wizard"></a>
+
+## `/wizard`：生成给人操作的交互式向导
+
+处境：Todo App 要接入一个第三方服务，必须由人去控制台创建 token、设置回调 URL 或配置 CI secret，agent 不能也不应该代替你点这些页面。
+
+```text
+/wizard
+
+请为“在第三方控制台创建 API token 并配置到本仓库 CI secret”生成一个交互式向导。
+只包含必须由人完成的步骤，并在每一步说明应该确认什么。
+```
+
+它不是普通 checklist，而是 human-in-the-loop 的操作向导。适合 credentials、外部控制台、CI secret、一次性迁移或 cutover；如果步骤可以由 agent 直接完成，就不需要 wizard。
+
+产物是可运行或可照着执行的人类操作流程。
+
+<a id="writing-for-agents"></a>
+
+## `/writing-for-agents`：把流程写成 agent 能执行的文档
+
+处境：你发现自己经常写教程、验证 Markdown 锚点、检查 README 链接，想把这套动作写成 agent 以后能稳定执行的说明。
+
+```text
+/writing-for-agents
+
+我想把“为本仓库写教程文章并验证 README 锚点”的流程写成给 agent 使用的说明。
+请帮我设计触发条件、输入、步骤、产物和验证清单。
+```
+
+好 agent 文档保存的是可重复工作方式，不是一段很长的万能 prompt。
+
+产物是可放进 `AGENTS.md`、项目说明或 Skill 草案里的写作结构：什么时候触发、先读什么、怎么执行、产出哪些 artifacts、如何验证。
 

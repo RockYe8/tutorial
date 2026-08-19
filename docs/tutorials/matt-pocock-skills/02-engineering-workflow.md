@@ -4,7 +4,7 @@
 
 这时 AI 编程的问题不再是“能不能更快写代码”。更快写错方向的代码，只会更快制造返工。真正需要的是一串可交接的 workflow artifacts：仓库约定、领域词汇、ADR、spec、tickets、测试、review 结果和 issue 评论。它们让每一位 agent 都知道自己不是在现场发挥，而是在沿着同一条工程主链路工作。
 
-Matt Pocock 在 [AI Hero Skills Catalog](https://www.aihero.dev/skills-catalog) 和 [`mattpocock/skills`](https://github.com/mattpocock/skills) 里的核心 framing 很一致：Skill 是 focused, repeatable workflow。下面的重点不是背命令，而是看到这些 workflow 如何把一个 Todo 功能从“我想加标签”推进到“一个 ticket 可以被实现、验证、review、交接”。
+Matt Pocock 在 [AI Hero Skills](https://www.aihero.dev/skills) 和 [`mattpocock/skills`](https://github.com/mattpocock/skills) 里的核心 framing 很一致：Skills 是小而可组合的 workflows。下面的重点不是背命令，而是看到这些 workflow 如何把一个 Todo 功能从“我想加标签”推进到“一个 ticket 可以被实现、验证、review、交接”。
 
 <a id="setup-matt-pocock-skills"></a>
 ## 先做仓库约定设置
@@ -20,7 +20,7 @@ Matt Pocock 在 [AI Hero Skills Catalog](https://www.aihero.dev/skills-catalog) 
 如果缺少 issue tracker、triage labels 或 domain docs 说明，请按本仓库实际情况创建。
 ```
 
-它不是把 `/grill-with-docs`、`/implement` 这些 Skills 安装进项目。Skills 仍然来自你的 Codex 环境；setup 只是让这些 Skills 读懂当前仓库的工作方式。
+它不是把 `/grill-with-docs`、`/implement` 这些 Skills 安装进项目。Skills 仍然来自你的 Codex 全局环境；在本机当前安装记录里，Windows 路径是 `C:\Users\<your-username>\.agents\skills`。setup 只是让这些 Skills 读懂当前仓库的工作方式。
 
 本仓库里最关键的四个 setup artifacts 是：
 
@@ -163,7 +163,7 @@ Todo 应用可能要从个人工具升级成轻量团队任务管理。
 - 不做什么：团队协作、分享标签、智能推荐、跨设备同步。
 - 怎么验收：默认列表隐藏归档任务；标签筛选只看 active tasks；Archive 视图可筛选 archived tasks；归档不改变完成状态。
 
-这份 spec 是后续 `/to-tickets` 和 `/code-review` 的参照物。没有 spec，review 只能检查“代码看起来对不对”；有 spec，review 才能检查“是否实现了当初说好的东西”。
+这份 spec 是后续 `/to-tickets` 和 `/code-review` 的参照物。没有 spec，review 的 Spec 轴应该跳过或明确说缺少依据，而不是临场编造需求；有 spec，review 才能检查“是否实现了当初说好的东西”。
 
 在 Todo 例子里，`/to-spec` 不应该重新问“归档到底是不是完成”。这个问题已经在 `/grill-with-docs` 里回答过，并且可能已经沉淀到 `CONTEXT.md` 或 ADR。`/to-spec` 要做的是把这条共识写成验收标准：归档不改变完成状态；默认列表隐藏归档任务；Archive 视图可以查看和筛选归档任务。
 
@@ -213,7 +213,7 @@ Todo 标签功能里，`建立标签数据模型` 如果只改数据层，可能
 <a id="implement"></a>
 ## 用 `/implement` 执行一个 ticket
 
-到了 `/implement`，才真正进入交付。它适合拿一个已经 `ready-for-agent` 的 ticket，让 Codex 自己读取 spec、修改代码、运行验证、做 review、更新 issue，最后提交。
+到了 `/implement`，才真正进入交付。它适合拿一个已经 `ready-for-agent` 的 ticket，让 Codex 读取 spec、修改代码、运行验证、做 review，并在仓库约定允许时提交。它不负责重新打开需求讨论；如果验收清单、issue 状态或 tracker closeout 需要人工确认，那仍然应该显式处理。
 
 ```text
 /implement
@@ -225,7 +225,7 @@ Todo 标签功能里，`建立标签数据模型` 如果只改数据层，可能
 .scratch/todo-tags/spec.md
 ```
 
-`/implement` 是外层执行 Skill。也就是说，它负责这整个 ticket 的生命周期：读上下文、理解验收、修改文件、运行测试、检查 diff、更新 issue 评论、提交当前 ticket。它不是“请写代码”的同义词，而是“请把这个 ticket 交付掉”。
+`/implement` 是外层执行 Skill。也就是说，它负责这整个 ticket 的实现生命周期：读上下文、理解验收、修改文件、运行测试、检查 diff、在合适时触发 review。更新 issue 评论、勾选验收项或关闭 ticket 应该按仓库约定执行，不要假设每个环境都会自动完成。它不是“请写代码”的同义词，而是“请把这个 ticket 尽量交付到可验证状态”。
 
 在实现过程中，它可以在合适的接缝调用 `/tdd`。例如筛选逻辑很适合先写失败测试；但更新一篇 Markdown 教程这样的纯文档 ticket，就不一定适合 TDD，验证重点会变成链接、清单和 review。
 
@@ -237,7 +237,7 @@ spec + ticket
        -> 在适合的行为接缝使用 /tdd
        -> 经常跑 typecheck、单测或页面检查
        -> 完成后调用 /code-review
-       -> 更新 issue comment，提交当前 ticket
+       -> 按仓库约定更新 issue comment 或提交
 ```
 
 `/implement` 管外层交付，`/tdd` 管红绿反馈，`/code-review` 管交付后的两轴检查。它们不是三条并列路线，而是一条 ticket 生命周期里的不同层次。
@@ -304,6 +304,8 @@ Spec 来源是 .scratch/todo-tags/spec.md 和当前 ticket。
 ```
 
 这一步特别重要，因为 AI 很擅长写出局部合理的代码，却可能偏离原始意图。比如它实现了标签筛选，却忘了“默认筛选不包含归档任务”；或者它做了 Archive 视图，却把 completed 和 archived 绑定在一起。`/code-review` 的价值就是把这些偏差在合并前暴露出来。
+
+也要记住它的边界：review findings 是需要核对的假设，不是最终判决；如果没有明确 spec，它不应该替你发明验收标准。不同工具对 staged、uncommitted 或 committed diff 的支持也不同，调用前要说明你希望 review 哪个范围。
 
 <a id="ticket-lifecycle"></a>
 ## Ticket 生命周期与 QA 失败处理
@@ -443,23 +445,25 @@ Todo 例子里，如果一个 ticket 同时要求“标签管理、筛选、归�
 
 冲突解决的重点是理解双方意图，而不是机械选一边。
 
-<a id="writing-great-skills"></a>
-## 用 `/writing-great-skills` 学写 Skill
+<a id="writing-for-agents"></a>
+## 用 `/writing-for-agents` 学写给 agent 的文档
 
-当你已经熟悉这套 workflow，想把自己的重复流程也变成 Skill，可以用 `/writing-great-skills`。
+当你已经熟悉这套 workflow，想把自己的重复流程、项目规则或 agent 协作说明写清楚，可以用 `/writing-for-agents`。
 
 ```text
-/writing-great-skills
+/writing-for-agents
 
-我想把“为本仓库写教程文章并验证 README 锚点”沉淀成一个 Skill。
-请教我如何设计触发条件、输入、步骤和验证清单。
+我想把“为本仓库写教程文章并验证 README 锚点”的流程写成给 agent 使用的说明。
+请帮我设计触发条件、输入、步骤、产物和验证清单。
 ```
 
-写 Skill 的目标不是保存一段长 prompt，而是保存一种可重复执行的工作方式：什么时候触发、要读哪些文件、产出什么 artifacts、如何验证。
+写给 agent 的文档目标不是保存一段长 prompt，而是保存一种可重复执行的工作方式：什么时候触发、要读哪些文件、产出什么 artifacts、如何验证。
 
 ## 一条可以照抄的主链路
 
 当你在真实仓库里推进一个 Todo 功能时，可以按这条路线走：
+
+在 `/to-tickets` 之前，尽量保留同一段澄清上下文，让 shared understanding 能顺利沉淀成 spec 和 tickets；拆票完成后，每个 `/implement` ticket 反而更适合放进 fresh context，避免旧讨论噪音影响执行。
 
 ```text
 1. /setup-matt-pocock-skills
