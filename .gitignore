@@ -1,5 +1,7 @@
 dist/
 references/
+
+# Local research and planning notes
 .scratch/
 CONTEXT.md
 docs/research/
@@ -7,5 +9,19 @@ docs/tutorials/**/research-*.md
 docs/tutorials/**/writing-decisions.md
 docs/tutorials/**/draft-*.md
 docs/tutorials/**/local-*.md
+
+# Local teaching state from /teach workspaces
+docs/tutorials/**/MISSION.md
+docs/tutorials/**/README.md
+docs/tutorials/**/RESOURCES.md
+docs/tutorials/**/NOTES.md
+docs/tutorials/**/learning-records/
+docs/tutorials/**/lessons/
+docs/tutorials/**/reference/
+docs/tutorials/**/assets/
+docs/tutorials/**/.cache/
+docs/tutorials/**/tmp/
+
+# Legacy local-only tutorial notes
 docs/tutorials/claude-code-basic-manual/writing-decisions.md
 docs/tutorials/matt-pocock-skills/local-html-export.md
