@@ -57,6 +57,11 @@
 - [附录 E：Security / Release Checklist](docs/tutorials/agent-skill-engineering-handbook/appendix-e-security-release-checklist.md)
 - [v1.0 Readiness Checklist](docs/tutorials/agent-skill-engineering-handbook/v1.0-readiness-checklist.md)
 
+## Python 设计意图树教程
+
+- [教程首页](docs/tutorials/python-design-intent-tree/README.md)
+- [1. Python 为什么把代码运行成对象、名字和模块？](docs/tutorials/python-design-intent-tree/01-running-model-code-blocks-namespaces.md)
+
 ## 维护命令
 
 - `npm test`

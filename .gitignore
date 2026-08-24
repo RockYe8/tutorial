@@ -12,7 +12,6 @@ docs/tutorials/**/local-*.md
 
 # Local teaching state from /teach workspaces
 docs/tutorials/**/MISSION.md
-docs/tutorials/**/README.md
 docs/tutorials/**/RESOURCES.md
 docs/tutorials/**/NOTES.md
 docs/tutorials/**/learning-records/
