@@ -32,6 +32,8 @@ When the user asks for source-backed "why" explanations about Python language de
 
 For the full methodology, evidence, boundaries, and lesson-shaping guidance, read `.scratch/design-intent-tree-learning-methodology.md` before designing the teaching path.
 
+For Python Design Intent Tree chapters, use `docs/tutorials/python-design-intent-tree/01-running-model-code-blocks-namespaces.md` as the style and structure anchor: start from historical pressure and competing routes, derive Python's mechanism from goal and constraint, then attach examples, implementation details, failure modes, and migration comparison to that argument. Public chapters live as `docs/tutorials/python-design-intent-tree/NN-*.md`; local teaching state stays in that tutorial's ignored `lessons/`, `reference/`, `assets/`, `NOTES.md`, and `learning-records/`.
+
 Do not teach complex topics as a flat checklist of concepts. Start from the system's design intent: what problem it solves, what constraints it faces, what tradeoffs shaped it, and why each mechanism exists. Teach load-bearing intent nodes first, then connect later details back to those nodes as practice exposes them.
 
 For foundational language tutorials, dig below capabilities into design causality. A mechanism is not sufficiently explained when the chapter only says what it enables. Explain why the language needed that mechanism in its original problem setting, what competing designs could have handled the same pressure, what those alternatives would have optimized for, why this language chose differently, and what costs came with the choice. Keep asking the underlying design questions until the tutorial can connect goal, constraint, mechanism, consequence, and tradeoff in one continuous argument.
