@@ -8,10 +8,10 @@
 
 1. [Python 为什么把代码运行成对象、名字和模块？](01-running-model-code-blocks-namespaces.md)
 2. [Python 为什么用 `list`、`tuple`、`dict`、`set` 组织对象？](02-data-structures-object-organization.md)
+3. [Python 为什么把行为包装成函数对象？](03-functions-behavior-objects.md)
 
 ## 后续主题
 
-- 行为组织：函数、参数、返回值和作用域如何形成可复用行为。
 - 模块边界：模块、包和导入规则如何组织多文件程序。
 - 可读性约束：命名、结构、PEP 20 和 PEP 8 如何影响长期维护。
 - 错误和资源边界：异常、`try`、`with` 如何表达失败与清理。
