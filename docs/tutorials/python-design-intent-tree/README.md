@@ -16,12 +16,12 @@
 
 公开章节按 24 章规划推进。每章先形成完整 `## 本章推理总览`，经审阅后再展开正文；正文完成后配套最小练习和反馈问题。
 
-6. 错误与资源边界：`exception`、`try`、`except`、`raise`、`finally`、`with`
-7. 类和实例：`class`、instance、attribute、method、`self`
-8. 属性查找：实例属性、类属性、方法绑定和查找顺序
-9. 可变状态：对象状态、别名、副作用、拷贝和共享引用
-10. 继承与组合：继承、组合、替换关系和边界代价
-11. Python 数据模型：特殊方法、协议、`len`、`iter`、`in`、上下文管理
+6. 类和实例：`class`、instance、attribute、method、`self`
+7. 属性查找：实例属性、类属性、方法绑定和查找顺序
+8. 可变状态：对象状态、别名、副作用、拷贝和共享引用
+9. 继承与组合：继承、组合、替换关系和边界代价
+10. Python 数据模型：特殊方法、协议、`len`、`iter`、`in` 与语法协作
+11. 错误与资源边界：`exception`、`try`、`except`、`raise`、`finally`、`with`
 12. 迭代模型：iterable、iterator、`for`、`range`、`enumerate`
 13. 生成器：`yield`、惰性计算、流式数据和一次性迭代
 14. 推导式：list/dict/set comprehension、generator expression
